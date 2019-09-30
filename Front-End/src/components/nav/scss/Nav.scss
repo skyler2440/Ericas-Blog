@@ -1,0 +1,22 @@
+.header {
+    font-family: 'Satisfy', cursive !important;
+    color: #EC494A;
+}
+.navlink{
+    font-family: 'Beth Ellen', cursive;
+    font-size: 1.2rem;
+    color: #EC494A;
+}
+.navlink.active{
+    color: #A0AE6F;
+    font-size: 1.4;
+  font-weight: 1000;}
+  .navlink:hover{
+    color: #F6C3A2;
+  }
+  .menu{
+    background-color: #D2B2A4 !important;
+    box-shadow: none !important;
+    border: none !important;
+    -webkit-box-shadow: none !important;  
+  }

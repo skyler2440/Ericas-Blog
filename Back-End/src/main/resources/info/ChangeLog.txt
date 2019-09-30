@@ -1,0 +1,8 @@
+September 28, 2019
+A complete overhaul of the code so am restarting this list...
+
+Todo
+
+Custom Swagger
+    Swagger for custom request body
+    javadocs
