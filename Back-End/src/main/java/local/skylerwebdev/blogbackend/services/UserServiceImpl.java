@@ -54,8 +54,16 @@ public class UserServiceImpl implements UserDetailsService,
 
     public User findUserById(long id) throws ResourceNotFoundException
     {
-        return userrepos.findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found!"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = userrepos.findByUsername(authentication.getName());
+        if (id == authenticatedUser.getUuid())
+        {
+            return userrepos.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found!"));
+        }        else
+        {
+            throw new ResourceNotFoundException(id + " not Current User");
+        }
     }
 
     @Override

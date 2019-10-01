@@ -17,7 +17,7 @@ const ConfirmDeleteComment = props => {
         <Modal.Content>
           <Button
             onClick={() => {
-              props.deleteComment.deleteComment(props.commentprops.commentid, props.commentprops.commentuser).then(() => {
+              props.deleteComment.deleteComment(props.commentprops.commentid, props.commentprops.commentuserid).then(() => {
                 window.location.reload();
               });
             }}

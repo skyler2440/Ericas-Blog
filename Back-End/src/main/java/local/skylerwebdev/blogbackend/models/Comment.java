@@ -27,18 +27,21 @@ public class Comment
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<UserComments> usercomments = new ArrayList<>();
 
-    private long commentuser;
+    private long commentuserid;
+
+    private String commentusername;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("comment")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<BlogPostComments> blogPostComments = new ArrayList<>();
 
-    public Comment(String date, String comment, long commentuser, long postid)
+    public Comment(String date, String comment, long commentuserid, String commentusername, long postid)
     {
         this.date = date;
         this.comment = comment;
-        this.commentuser = commentuser;
+        this.commentuserid = commentuserid;
+        this.commentusername = commentusername;
         this.postid = postid;
     }
 
@@ -106,14 +109,24 @@ public class Comment
         this.blogPostComments = blogPostComments;
     }
 
-    public long getCommentuser()
+    public long getCommentuserid()
     {
-        return commentuser;
+        return commentuserid;
     }
 
-    public void setCommentuser(long commentuser)
+    public void setCommentuserid(long commentuserid)
     {
-        this.commentuser = commentuser;
+        this.commentuserid = commentuserid;
+    }
+
+    public String getCommentusername()
+    {
+        return commentusername;
+    }
+
+    public void setCommentusername(String commentusername)
+    {
+        this.commentusername = commentusername;
     }
 
     @Override
@@ -125,7 +138,8 @@ public class Comment
                 ", comment='" + comment + '\'' +
                 ", postid=" + postid +
                 ", usercomments=" + usercomments +
-                ", commentuser='" + commentuser + '\'' +
+                ", commentuserid=" + commentuserid +
+                ", commentusername='" + commentusername + '\'' +
                 ", blogPostComments=" + blogPostComments +
                 '}';
     }

@@ -165,7 +165,7 @@
 
     <build>
 <!--        <finalName>${project.artifactId}</finalName>-->
-        <finalName>skylerwebdev-blogbackend</finalName>
+        <finalName>skylerwebdev-ericasblog</finalName>
 
         <plugins>
             <plugin>

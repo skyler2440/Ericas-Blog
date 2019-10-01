@@ -6,8 +6,12 @@ import local.skylerwebdev.blogbackend.models.BlogPost;
 import local.skylerwebdev.blogbackend.models.User;
 import local.skylerwebdev.blogbackend.repository.BlogPostRepostitory;
 import local.skylerwebdev.blogbackend.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,14 +28,30 @@ public class BlogPostServiceImpl implements BlogPostService
     @Autowired
     UserRepository userRepository;
     @Override
-    public List<BlogPost> findAll(Pageable pageable)
+    public List<BlogPost> findAll(Integer pageNo, Integer pageSize, String sortBy)
     {
-        List<BlogPost> postList = new ArrayList<>();
-        blogPostRepostitory.findAll(pageable).iterator().forEachRemaining(postList::add);
-
-        return postList;
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<BlogPost> pagedResult = blogPostRepostitory.findAll(paging);
+        if (pagedResult.hasContent())
+        {
+            return pagedResult.getContent();
+        } else {
+            return new ArrayList<BlogPost>();
+        }
+//        List<BlogPost> postList = new ArrayList<>();
+//        Pageable pageableRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+//        Page <BlogPost> posts = blogPostRepostitory.findAll(pageableRequest);
+//        postList = posts.getContent();
+////        blogPostRepostitory.findAll(pageableRequest).iterator().forEachRemaining(postList::add);
+//
+//        return postList;
     }
 
+    @Override
+    public Page<BlogPost> findPaginated(int page, int size)
+    {
+return blogPostRepostitory.findAll(new PageRequest(page, size));
+    }
 
     @Override
     public BlogPost findBlogPostById(long id)

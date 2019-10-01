@@ -4,9 +4,7 @@ import {withFormik, Form, Field} from 'formik';
 import * as Yup from 'yup';
 
 import {doSignIn} from '../../store/actions/authActions';
-import axios from 'axios';
-import {axiosWithAuth} from '../../utils/axiosWithAuth';
-import {types} from '../../store/actions/index';
+
 
 function LogFrm({errors, touched}) {
     return(

@@ -59,7 +59,8 @@ public class CommentServiceImpl implements CommentService
         newComment.setDate(comment.getDate());
         newComment.setComment(comment.getComment());
         newComment.setPostid(postid);
-        newComment.setCommentuser(uuid);
+        newComment.setCommentuserid(uuid);
+        newComment.setCommentusername(authenticatedUser.getUsername());
         Comment savedComment = commentRepository.save(newComment);
             commentRepository.insertUserComment(uuid, savedComment.getCommentid());
             commentRepository.insertPostComment(postid, savedComment.getCommentid());

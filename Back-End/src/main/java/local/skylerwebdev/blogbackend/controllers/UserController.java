@@ -67,7 +67,7 @@ public class UserController
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping(value = "/user/{userId}",
                 produces = {"application/json"})
     public ResponseEntity<?> getUserById(HttpServletRequest request,

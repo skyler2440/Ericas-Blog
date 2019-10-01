@@ -5,7 +5,6 @@ import About from '../components/pages/About';
 import Contact from '../components/pages/Contact';
 import Login from '../components/pages/Login';
 import AddPost from '../components/pages/AddPost';
-import AddComment from '../components/pages/AddCommentForm';
 import Blog from '../components/pages/Blog';
 import PrivateRoute from './PrivateRoute';
 import Logout from '../components/pages/Logout';

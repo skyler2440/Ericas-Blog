@@ -5,6 +5,7 @@ import local.skylerwebdev.blogbackend.services.BlogPostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -30,14 +31,13 @@ public class BlogPostController
     @GetMapping(value = "/all",
             produces = {"application/json"})
     public ResponseEntity<?> listAllBlogPosts(HttpServletRequest request,
-                                          @PageableDefault(page = 0,
-                                                  size = 5)
-                                                  Pageable pageable)
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "5") int size)
     {
         logger.trace(request.getMethod()
                 .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        List<BlogPost> myUsers = blogPostService.findAll(pageable);
+        Page<BlogPost> myUsers = blogPostService.findPaginated(page,size);
         return new ResponseEntity<>(myUsers,
                 HttpStatus.OK);
     }

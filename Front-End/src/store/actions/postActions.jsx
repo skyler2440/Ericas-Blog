@@ -16,10 +16,10 @@ export const postBlogPost = (post) => dispatch =>{
   
   };
 
-  export const getBlogPosts = () => dispatch => {
+  export const getBlogPosts = (pageno) => dispatch => {
     dispatch({ type: types.GET_BLOG_START});
     return axiosWithAuth()
-      .get('/posts/all')
+      .get(`/posts/all?page=${pageno}`)
       .then(
         res => {
           console.log(res)

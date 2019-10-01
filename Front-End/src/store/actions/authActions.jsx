@@ -6,12 +6,15 @@ export const doSignIn = credentials => dispatch => {
 
   axios
     .post(
-      "http://localhost:2019/login",
+      "https://skylerwebdev-ericasblog.herokuapp.com/login",
+      // "http://localhost:2019/login",
       `grant_type=password&username=${credentials.username}&password=${credentials.password}`,
       {
         headers: {
           // btoa is converting our client id/client secret into base64
-          Authorization: `Basic ${btoa("skyler-client:skyler-secret")}`,
+          Authorization: `Basic ${btoa("oauth-client:oauth-secret")}`,
+          // Authorization: `Basic ${btoa("skyler-client:skyler-secret")}`,
+
           "Content-Type": "application/x-www-form-urlencoded"
         }
       }
@@ -21,7 +24,7 @@ export const doSignIn = credentials => dispatch => {
       localStorage.setItem("token", res.data.access_token);
       localStorage.setItem("user", credentials.username);
       console.log(res);
-      dispatch({ type: types.LOGIN_SUCCESS, payload: res.data });
+      dispatch({ type: types.LOGIN_SUCCESS, payload: res.data.access_token });
       dispatch({ type: types.GET_USER_START });
       return axiosWithAuth()
         .get(`/users/name/${credentials.username}`)
@@ -62,6 +65,25 @@ return axiosWithAuth()
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("uuid")
+      console.dir(err);
+    });
+};
+
+export const getLoggedInUser = () => dispatch => {
+
+  dispatch({ type: types.GET_PROFILE_START });
+  var uuid = localStorage.getItem("uuid")
+  return axiosWithAuth()
+.get(`/users/user/${uuid}`)
+
+.then(res => {
+      dispatch({ type: types.GET_PROFILE_SUCCESS, payload: res.data });
+
+      console.log("data" , res);
+      })
+    .catch(err => {
+      dispatch({ type: types.GET_PROFILE_FAIL, payload: err });
+
       console.dir(err);
     });
 };

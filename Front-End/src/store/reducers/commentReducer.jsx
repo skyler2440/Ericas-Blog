@@ -62,6 +62,7 @@ export default (state = initialState, action) => {
                       isLoading: false,
                       errors: payload
                     };
+
             default:
                 return state;
     }
