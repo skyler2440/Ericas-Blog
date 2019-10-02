@@ -100,5 +100,17 @@ public class BlogPostController
         blogPostService.delete(postid, uuid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping(value = "/{postid}",
+            produces = {"application/json"})
+    public ResponseEntity<?> getUserById(HttpServletRequest request,
+                                         @PathVariable
+                                                 Long postid)
+    {
+        logger.trace(request.getMethod()
+                .toUpperCase() + " " + request.getRequestURI() + " accessed");
+        BlogPost u = blogPostService.findBlogPostById(postid);
+        return new ResponseEntity<>(u,
+                HttpStatus.OK);
+    }
 
 }

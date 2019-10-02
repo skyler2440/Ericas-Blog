@@ -24,7 +24,6 @@ public class CommentController
     CommentService commentService;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping(value = "/{uuid}/{postid}",
             consumes = {"application/json"},
             produces = {"application/json"})

@@ -22,14 +22,12 @@ export const postBlogPost = (post) => dispatch =>{
       .get(`/posts/all?page=${pageno}`)
       .then(
         res => {
-          console.log(res)
           dispatch({type: types.GET_BLOG_SUCCESS, payload: res.data});
         }
       )
       .catch(
         err => {
           dispatch({type: types.GET_BLOG_FAIL, payload: err})
-          console.log(err)
         }
       )
   };
@@ -47,4 +45,20 @@ export const postBlogPost = (post) => dispatch =>{
     dispatch({type: types.DELETE_BLOG_FAIL, payload: err})
   })
 
+};
+
+export const getBlogPostsById = (postid) => dispatch => {
+  dispatch({ type: types.GET_BLOGPOST_START});
+  return axiosWithAuth()
+    .get(`/posts/${postid}`)
+    .then(
+      res => {
+        // dispatch({type: types.GET_BLOGPOST_SUCCESS, payload: res.data});
+      }
+    )
+    .catch(
+      err => {
+        dispatch({type: types.GET_BLOGPOST_FAIL, payload: err})
+      }
+    )
 };

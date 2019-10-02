@@ -6,7 +6,6 @@ import AddCommentForm from "./AddCommentForm";
 //This Modal Component
 
 const AddComment = props => {
-console.log("TCL: props", props)
   return (
     <div className="edit-account">
       <Modal

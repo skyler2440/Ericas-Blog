@@ -25,3 +25,67 @@
     color: white;
     border: 1px solid #0099FF;
   }
+  .postHeader{
+      display: flex;
+      justify-content:space-between;
+  }
+  .postMeta{
+      display: flex;
+  }
+  .postDate{
+      margin-left: 1rem;
+  }
+  .commentBoxTop{
+      display: flex;
+      margin-top: .75rem;
+      margin-bottom: -1rem;
+  }
+  .commentDate{
+      margin-left: .5rem;
+      margin-right: .5rem;
+  }
+  .commentAvatar{
+      width: 40px;
+      height: 40px;
+      border-radius: 10%;
+  }
+  .commentBox{
+      display: flex;
+      margin-top: 1rem;
+  }
+  .commentUserName{
+      margin-left: .5rem;
+  }
+  .commentBoxBottom{
+    //   margin-top: 1.5rem;
+      margin-left: 45px;
+      width:80%;
+      white-space: wrap;
+      overflow-wrap: break-word;
+  }
+  .blogPostBox{
+      width: 100%;
+      overflow: on;
+      white-space:normal;
+      border: 1px solid grey;
+      border-radius: 1%;
+      padding: 1rem;
+      margin-top: 1rem;
+      
+  }
+  .postContent{
+     border: 3px solid grey;
+     padding: 1rem;
+     border-radius: 1%;
+  }
+  .postBody{
+    overflow-wrap: break-word;
+
+  }
+  .deletePost{
+    font-family: 'Satisfy', cursive !important;
+    font-size: 1.5rem;
+    font-weight: bolder;
+    cursor: pointer;
+  }
+  

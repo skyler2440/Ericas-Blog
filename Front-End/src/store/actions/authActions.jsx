@@ -4,16 +4,16 @@ import { types } from "./index";
 export const doSignIn = credentials => dispatch => {
   dispatch({ type: types.LOGIN_START });
 
-  axios
+ return axios
     .post(
-      "https://skylerwebdev-ericasblog.herokuapp.com/login",
-      // "http://localhost:2019/login",
+      // "https://skylerwebdev-ericasblog.herokuapp.com/login",
+      "http://localhost:2019/login",
       `grant_type=password&username=${credentials.username}&password=${credentials.password}`,
       {
         headers: {
           // btoa is converting our client id/client secret into base64
-          Authorization: `Basic ${btoa("oauth-client:oauth-secret")}`,
-          // Authorization: `Basic ${btoa("skyler-client:skyler-secret")}`,
+          // Authorization: `Basic ${btoa("oauth-client:oauth-secret")}`,
+          Authorization: `Basic ${btoa("skyler-client:skyler-secret")}`,
 
           "Content-Type": "application/x-www-form-urlencoded"
         }
@@ -23,7 +23,6 @@ export const doSignIn = credentials => dispatch => {
       // localStorage.setItem('token', res.data.access_token);
       localStorage.setItem("token", res.data.access_token);
       localStorage.setItem("user", credentials.username);
-      console.log(res);
       dispatch({ type: types.LOGIN_SUCCESS, payload: res.data.access_token });
       dispatch({ type: types.GET_USER_START });
       return axiosWithAuth()
@@ -31,12 +30,10 @@ export const doSignIn = credentials => dispatch => {
         .then(res => {
           localStorage.removeItem("user");
           localStorage.setItem("uuid", res.data.uuid);
-          console.log(res);
-          dispatch({ type: types.GET_USER_SUCCESS, payload: res.data });
+          dispatch({ type: types.GET_USER_SUCCESS, payload:res.data});
         })
         .catch(err => {
           //   dispatch({type: types.GET_USER_FAIL, payload: err})
-          console.log(err);
         });
     })
     .catch(err => {
@@ -57,15 +54,13 @@ return axiosWithAuth()
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("uuid");
-      console.log(res);
-      // dispatch({ type: types.LOGOUT_SUCCESS, payload: res.data });
+      dispatch({ type: types.LOGOUT_SUCCESS, payload: false });
       })
     .catch(err => {
       dispatch({ type: types.LOGOUT_FAIL, payload: err });
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("uuid")
-      console.dir(err);
     });
 };
 
@@ -79,11 +74,25 @@ export const getLoggedInUser = () => dispatch => {
 .then(res => {
       dispatch({ type: types.GET_PROFILE_SUCCESS, payload: res.data });
 
-      console.log("data" , res);
       })
     .catch(err => {
       dispatch({ type: types.GET_PROFILE_FAIL, payload: err });
 
-      console.dir(err);
     });
+};
+
+export const doCreateAccount = newUserDetails => dispatch =>{
+  dispatch({ type: types.CREATE_USER_START});
+  axios.post('http://localhost:2019/users/user', newUserDetails)
+  .then(
+    res => {
+      dispatch({ type: types.CREATE_USER_SUCCESS, payload: {message: 'User was created successfully!'}});
+    }
+  )
+  .catch(
+    err => {
+      dispatch({type: types.CREATE_USER_FAIL, payload: err})
+    } 
+  )
+
 };

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {withFormik, Form, Field} from 'formik';
 import * as Yup from 'yup';
 
-import {doCreateUser} from '../../store/actions/authActions';
+import {doCreateAccount} from '../../store/actions/authActions';
 
 
 function CreateAccountFrm({errors, touched}) {
@@ -35,7 +35,7 @@ function CreateAccountFrm({errors, touched}) {
 };
 
 const CreateAccount = withFormik({
-    mapPropsToValues({username, password}) {
+    mapPropsToValues({username, password, email, fname, lname}) {
         return{
             username: username || "",
             password: password || "",
@@ -47,13 +47,12 @@ const CreateAccount = withFormik({
     validationSchema: Yup.object().shape({
         username: Yup.string().required("Username is Required"),
         password: Yup.string().required("Password is Required"),
-        email: Yup.email().required("Email is Required"),
+        email: Yup.string().required("Email is Required"),
         fname: Yup.string().required("First Name is Required"),
         lname: Yup.string().required("Last Name is Required")
     }),
 
     handleSubmit(values, formikBag) {
-        // console.log(formikBag);
         formikBag.props.doCreateAccount(values)
         formikBag.props.history.push("/blog")
 

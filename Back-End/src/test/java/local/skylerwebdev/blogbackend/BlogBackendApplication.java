@@ -1,4 +1,4 @@
-package com.lambdaschool.starthere;
+package local.skylerwebdev.blogbackend;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,15 +7,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
-// @EnableJpaAuditing
+//@EnableJpaAuditing
 @SpringBootApplication
-public class StartHereApplication
+public class BlogBackendApplication
 {
-    private static final Logger logger = LoggerFactory.getLogger(local.skylerwebdev.blogbackend.BlogBackendApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlogBackendApplication.class);
     private static boolean stop = false;
 
     @Autowired
@@ -37,7 +38,8 @@ public class StartHereApplication
 
         if (!stop)
         {
-            ApplicationContext ctx = SpringApplication.run(local.skylerwebdev.blogbackend.BlogBackendApplication.class, args);
+            ApplicationContext ctx = SpringApplication.run(BlogBackendApplication.class,
+                                                           args);
 
             DispatcherServlet dispatcherServlet = (DispatcherServlet) ctx.getBean("dispatcherServlet");
             dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);

@@ -1,5 +1,6 @@
 package local.skylerwebdev.blogbackend.services;
 
+import local.skylerwebdev.blogbackend.models.BlogPostComments;
 import local.skylerwebdev.blogbackend.models.Comment;
 
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.List;
 public interface CommentService
 {
     List<Comment> findAll();
+
+    List <Comment> findCommentsByPostId(long postid);
 
     Comment findCommentById(long id);
 

@@ -7,13 +7,15 @@ const Logout = (props) => {
     useEffect(() => {
         props.doSignOut()
       },[]);
-      console.log("signout: ",props)
     return(
-        <Redirect to = "/"/>
-    )}
+        <Redirect to = "/" props={props}/>
+        
+    )
+
+
+}
 
 const mapStateToProps = (state) => ({
     logout: state.postReducer.logout,
-    // console.log(state);
     })
 export default connect(mapStateToProps, {doSignOut})(Logout);

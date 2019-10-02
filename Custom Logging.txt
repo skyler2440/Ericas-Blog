@@ -1,0 +1,22 @@
+Custom Logging
+
+add deps
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+start actuator
+# NEED FOR ACTUATORS TO WORK
+management.endpoints.web.exposure.include=*
+management.endpoint.health.show-details=always
+management.endpoint.shutdown.enabled=true
+
+give actuator access to admin in ResourceServerConfig
+
+
+            .antMatchers("/roles/**",
+                         "/actuator/**")
+            .hasAnyRole("ADMIN")
+

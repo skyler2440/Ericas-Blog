@@ -1,6 +1,8 @@
 package local.skylerwebdev.blogbackend.services;
 
 import local.skylerwebdev.blogbackend.exceptions.ResourceNotFoundException;
+import local.skylerwebdev.blogbackend.models.BlogPost;
+import local.skylerwebdev.blogbackend.models.BlogPostComments;
 import local.skylerwebdev.blogbackend.models.Comment;
 import local.skylerwebdev.blogbackend.models.User;
 import local.skylerwebdev.blogbackend.repository.BlogPostRepostitory;
@@ -11,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service(value = "commentService")
 public class CommentServiceImpl implements CommentService
@@ -46,6 +49,15 @@ public class CommentServiceImpl implements CommentService
             throw new ResourceNotFoundException(uuid + " not Current User");
         }
 
+    }
+
+    @Override
+    public List<Comment> findCommentsByPostId(long postid)
+    {
+    List<Comment> list = new ArrayList<>();
+
+
+    return list;
     }
 
     @Override

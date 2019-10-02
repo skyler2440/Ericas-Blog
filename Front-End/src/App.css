@@ -87,10 +87,10 @@ textarea{
   height: 5rem;
   font-size: 1.5rem !important;
 } */
-button{
-  margin: 1rem !important;
+/* button{ */
+  /* margin: 1rem !important; */
   /* font-size: 1.5rem !important; */
-}
+/* } */
 .delete{
   cursor: pointer;
 }

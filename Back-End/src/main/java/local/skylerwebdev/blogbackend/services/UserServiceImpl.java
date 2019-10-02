@@ -120,15 +120,7 @@ public class UserServiceImpl implements UserDetailsService,
         newUser.setEmail(user.getEmail());
 
         ArrayList<UserRoles> newRoles = new ArrayList<>();
-        for (UserRoles ur : user.getUserroles())
-        {
-            long id = ur.getRole()
-                        .getRoleid();
-            Role role = rolerepos.findById(id)
-                                 .orElseThrow(() -> new ResourceNotFoundException("Role id " + id + " not found!"));
-            newRoles.add(new UserRoles(newUser,
-                                       ur.getRole()));
-        }
+        newRoles.add(new UserRoles(newUser, rolerepos.findByNameIgnoreCase("user")));
         newUser.setUserroles(newRoles);
 
         ArrayList<UserBlogPosts> newBlogPosts = new ArrayList<>();

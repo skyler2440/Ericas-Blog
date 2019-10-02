@@ -3,6 +3,7 @@ import {types} from '../actions';
 const initialState = {
     token: "",
     user: null,
+    signedin: false,
     isAuth: false,
     isLoading: false,
     isSuccess: false,
@@ -26,6 +27,7 @@ export default (state = initialState, action) => {
               isLoading: false,
               isAuth: true,
               isSuccess: true,
+              signedin:true,
               token: payload
             };
           case types.LOGIN_FAIL:
@@ -35,6 +37,27 @@ export default (state = initialState, action) => {
               isLoading: false,
               token: ""
             };
+            case types.GET_USER_START:
+              return {
+                ...state,
+                isLoading: true,
+                errors: null,
+                isAuth: true,
+                isSuccess: false
+              };
+            case types.GET_USER_SUCCESS:
+              return {
+                ...state,
+                isLoading: false,
+                user: payload,
+                isSuccess: true
+              };
+            case types.GET_USER_FAIL:
+              return {
+                ...state,
+                errors: payload,
+                isLoading: false
+              };
             case types.GET_PROFILE_START:
               return {
                 ...state,
@@ -58,6 +81,34 @@ export default (state = initialState, action) => {
                 isLoading: false,
                 token: ""
               };
+              case types.CREATE_USER_START:
+                return {
+                  ...state,
+                  isLoading: true,
+                  errors: null,
+                  isAuth: false,
+                  user: {},
+                  isSuccess: false
+                };
+              case types.CREATE_USER_SUCCESS:
+                return {
+                  ...state,
+                  isLoading: false,
+                  errors: null,
+                  isAuth: false,
+                  user: {},
+                  isSuccess: true
+                };
+              case types.CREATE_USER_FAIL:
+                return {
+                  ...state,
+                  isLoading: false,
+                  errors: payload,
+                  isAuth: false,
+                  user: {},
+                  isSuccess: false
+                };
+          
               case types.LOGOUT_START:
             return {
               ...state,
@@ -72,8 +123,9 @@ export default (state = initialState, action) => {
               isLoading: false,
               isAuth: true,
               isSuccess: true,
-              token: payload,
-              user:payload
+              signedin: false,
+              token: null,
+              user:null
             };
           case types.LOGOUT_FAIL:
             return {

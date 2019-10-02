@@ -2,12 +2,14 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withFormik, Form, Field} from 'formik';
 import * as Yup from 'yup';
+import { Link } from "react-router-dom";
 
 import {doSignIn} from '../../store/actions/authActions';
 
 
 function LogFrm({errors, touched}) {
     return(
+        <>
         <Form className = "ui form">
             <div className = "field">
                 {touched.username && errors.username &&(<p className = "error">{errors.username}</p>)}
@@ -19,6 +21,8 @@ function LogFrm({errors, touched}) {
             </div>
             <button className = "ui button" type="submit">Login</button>
         </Form>
+        <h3>Don't have an account? <Link to="/createaccount">Create One</Link></h3>
+        </>
     );
 };
 
@@ -34,12 +38,17 @@ const Login = withFormik({
         password: Yup.string().required("Password is Required")
     }),
 
-    handleSubmit(values, formikBag) {
-        // console.log(formikBag);
-        formikBag.props.doSignIn(values)
-        formikBag.props.history.push("/blog")
-
-    }
+    handleSubmit: (values, formikBag) => {
+    formikBag.props.doSignIn(values).then(()=> {
+        if (localStorage.getItem("token"))
+        {
+            formikBag.props.history.push("/blog")
+            // window.location.reload()
+        }
+    })
+      },
+    
+      displayName: 'BasicForm',
     
       })(LogFrm);
       

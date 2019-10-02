@@ -2,7 +2,8 @@ import React from "react";
 import "./scss/Nav.scss";
 import Navbar from "./Navbar";
 
-const Header = () => {
+const Header = (props) => {
+
   return (
     <>
       <Navbar />

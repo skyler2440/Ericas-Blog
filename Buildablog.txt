@@ -1,0 +1,11 @@
+How to build a blog from the bottom up.
+Step 1 Save all instruction in another file so that it does not get deleted.
+
+1. Know what you want.
+    ...Well I want a blog.
+    ...Got it.
+2. Build it.
+    1.The Back-end
+    Tech-Used Java, SpringBoot, OAuth2, PostgreSQL, Hibernate
+    2. The Front-end
+    Tech-Used React, Redux, Formik, Axios

@@ -1,0 +1,1235 @@
+Build out a User Controller With Authenticaion.
+1. Start a new SpringBoot File
+2. Add Needed Deps to POM.XML
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <!--<scope>runtime</scope>-->
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2 -->
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>2.3.6.RELEASE</version>
+        </dependency>
+                <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+3. Create The File Structure
+I will be using
+-blogapp
+    -config
+        AuthorizationServerConfig.java
+        ResourceServerConfig.java
+        SecurityConfig.java
+        SimpleCorsFilter.java
+    -controllers
+        RolesController.java
+        UserController.java
+    -exceptions
+    -handlers
+    -models
+        Auditable.java
+        Role.java
+        User.java
+        UserRoles.java
+    -repositories
+        UserRepository.java
+        RoleRepository.java
+    -services
+        UserService.java
+        UserServiceImpl.java
+        RoleService.java
+        RoleServiceImpl.java
+        UserAuditing.java
+    -view
+        JustTheCount.java
+
+4. Set application.properties
+#SETS THE SERVER PORT YOU WANT TO RUN THE LOCAL SERVER ON
+server.port=${PORT:2019}
+#SETS THE ROOT PATH FOR REQUESTS 
+# server.servlet.context-path=/api
+
+# CHOOSE WHICH DB TO RUN
+local.run.db=H2
+#local.run.db=POSTGRESQL
+
+# H2 CONFIG BEGIN
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+spring.h2.console.settings.web-allow-others=true
+# H2 CONFIG END
+
+# WHAT TO DO WITH DATA BEGIN
+#DROP TABLES AND RECREATE -- TESTING
+spring.jpa.hibernate.ddl-auto=create
+spring.datasource.initialization-mode=always
+
+# KEEP TABLES DO NOT DROP -- PRODUCTION
+# spring.jpa.hibernate.ddl-auto=update
+# spring.datasource.initialization-mode=never
+# WHAT TO DO WITH DATA END
+
+# Should we use createBlob from java.sql.connection. PostgreSQL requires it to be true.
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+
+# Feature that determines what happens when no accessors are found for a type
+# (and there are no annotations to indicate it is meant to be serialized).
+spring.jackson.serialization.fail-on-empty-beans=false
+
+# Turns off Spring Boot automatic exception handling
+server.error.whitelabel.enabled=false
+
+# NEED FOR ACTUATORS TO WORK
+management.endpoints.web.exposure.include=*
+management.endpoint.health.show-details=always
+management.endpoint.shutdown.enabled=true
+
+# spring.jpa.show-sql=true
+# spring.jpa.properties.hibernate.format_sql=true
+
+5. Set up AuthorizationServerConfig File
+This file deals with the token when logging in
+@Configuration
+@EnableAuthorizationServer
+public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter
+{
+    // read from environment variable
+    static final String CLIENT_ID = System.getenv("OAUTHCLIENTID");
+    // read from environment variable
+    static final String CLIENT_SECRET = System.getenv("OAUTHCLIENTSECRET"); 
+    static final String GRANT_TYPE_PASSWORD = "password";
+    static final String AUTHORIZATION_CODE = "authorization_code";
+    static final String IMPLICIT = "implicit";
+    static final String SCOPE_READ = "read";
+    static final String SCOPE_WRITE = "write";
+    static final String TRUST = "trust";
+    static final int ACCESS_TOKEN_VALIDITY_SECONDS = 1 * 60 * 60;
+
+    @Autowired
+    private TokenStore tokenStore;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PasswordEncoder encoder;
+
+    @Override
+    public void configure(ClientDetailsServiceConfigurer configurer) throws Exception
+    {
+        //                .authorizedGrantTypes(GRANT_TYPE_PASSWORD, AUTHORIZATION_CODE, REFRESH_TOKEN, IMPLICIT)
+
+        configurer.inMemory()
+                  .withClient(CLIENT_ID)
+                  .secret(encoder.encode(CLIENT_SECRET))
+                  .authorizedGrantTypes(GRANT_TYPE_PASSWORD,
+                                        AUTHORIZATION_CODE,
+                                        IMPLICIT)
+                  .scopes(SCOPE_READ,
+                          SCOPE_WRITE,
+                          TRUST)
+                  .accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS);
+    }
+//    Sets Up so that oauth login point is /login
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception
+    {
+        endpoints.tokenStore(tokenStore)
+                 .authenticationManager(authenticationManager);
+        endpoints.pathMapping("/oauth/token",
+                              "/login");
+    }
+}
+6. Set Up ResourceServerConfig file
+This file will controll what users will be able to go to what paths
+@Configuration
+@EnableResourceServer
+public class ResourceServerConfig extends ResourceServerConfigurerAdapter
+{
+
+    private static final String RESOURCE_ID = "resource_id";
+
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources)
+    {
+        resources.resourceId(RESOURCE_ID)
+                 .stateless(false);
+    }
+
+    @Override
+    public void configure(HttpSecurity http) throws Exception
+    {
+        // http.anonymous().disable(); // since we allow anonymous users to access Swagger
+                                       // and create a user account
+        http.authorizeRequests()
+            .antMatchers("/",
+                         "/h2-console/**"
+                       )
+            .permitAll()
+            .antMatchers()
+            .authenticated()
+            // restrict application data...
+            // .antMatchers("/books", "/authors").hasAnyRole("ADMIN", "USER", "DATA")
+            // .antMatchers("/data/**").hasAnyRole("ADMIN", "DATA")
+            //
+            // restrict based on HttpMethod and endpoint
+            // .antMatchers(HttpMethod.GET, "/users/user/**").hasAnyRole("USER")
+            .antMatchers("/roles/**",
+                         "/actuator/**")
+            .hasAnyRole("ADMIN")
+            .and()
+            .exceptionHandling()
+            .accessDeniedHandler(new OAuth2AccessDeniedHandler());
+
+        // http.requiresChannel().anyRequest().requiresSecure(); // required for https
+        http.csrf()
+            .disable();
+        http.headers()
+            .frameOptions()
+            .disable();
+        http.logout()
+            .disable();
+    }
+}
+7. Setup SecurityConfig File
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig extends WebSecurityConfigurerAdapter
+{
+
+    @Resource(name = "userService")
+    private UserDetailsService userDetailsService;
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception
+    {
+        return super.authenticationManagerBean();
+    }
+
+    @Autowired
+    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception
+    {
+        auth.userDetailsService(userDetailsService)
+            .passwordEncoder(encoder());
+    }
+
+    @Bean
+    public TokenStore tokenStore()
+    {
+        return new InMemoryTokenStore();
+    }
+
+    @Bean
+    public PasswordEncoder encoder()
+    {
+        return new BCryptPasswordEncoder();
+    }
+}
+
+8.Setup SimpleCorsFilter
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class SimpleCorsFilter implements Filter
+{
+
+    public SimpleCorsFilter()
+    {
+    }
+
+    @Override
+    public void doFilter(ServletRequest req,
+                         ServletResponse res,
+                         FilterChain chain) throws IOException, ServletException
+    {
+        HttpServletResponse response = (HttpServletResponse) res;
+        HttpServletRequest request = (HttpServletRequest) req;
+        response.setHeader("Access-Control-Allow-Origin",
+                           "*");
+        //        response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Allow-Methods",
+                           "*");
+        //        response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, content-type, access_token");
+        response.setHeader("Access-Control-Allow-Headers",
+                           "*");
+        response.setHeader("Access-Control-Max-Age",
+                           "3600");
+
+        if (HttpMethod.OPTIONS.name()
+                              .equalsIgnoreCase(((HttpServletRequest) req).getMethod()))
+        {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else
+        {
+            chain.doFilter(req,
+                           res);
+        }
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException
+    {
+    }
+
+    @Override
+    public void destroy()
+    {
+    }
+}
+
+9.Create /models/Auditable file
+This file allows field auditing
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+abstract class Auditable
+{
+    @CreatedBy
+    protected String createdBy;
+
+    @CreatedDate
+    @Temporal(TIMESTAMP)
+    protected Date createdDate;
+
+    @LastModifiedBy
+    protected String lastModifiedBy;
+
+    @LastModifiedDate
+    @Temporal(TIMESTAMP)
+    protected Date lastModifiedDate;
+}
+
+10. create a models/User file
+This is the User entity and creates the user Object
+@Entity
+@Table(name = "users")
+public class User extends Auditable
+{
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long userid;
+
+    @Column(nullable = false,
+            unique = true)
+    private String username;
+
+    @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
+    @OneToMany(mappedBy = "user",
+               cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("user")
+    private List<UserRoles> userroles = new ArrayList<>();
+
+
+    public User()
+    {
+    }
+
+    public User(String username,
+                String password,
+                List<UserRoles> userRoles)
+    {
+        setUsername(username);
+        setPassword(password);
+        for (UserRoles ur : userRoles)
+        {
+            ur.setUser(this);
+        }
+        this.userroles = userRoles;
+    }
+
+    public long getUserid()
+    {
+        return userid;
+    }
+
+    public void setUserid(long userid)
+    {
+        this.userid = userid;
+    }
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+    public void setUsername(String username)
+    {
+        this.username = username.toLowerCase();
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public void setPassword(String password)
+    {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.password = passwordEncoder.encode(password);
+    }
+
+    public void setPasswordNoEncrypt(String password)
+    {
+        this.password = password;
+    }
+
+    public List<UserRoles> getUserroles()
+    {
+        return userroles;
+    }
+
+    public void setUserroles(List<UserRoles> userroles)
+    {
+        this.userroles = userroles;
+    }
+
+    @JsonIgnore
+    public List<SimpleGrantedAuthority> getAuthority()
+    {
+        List<SimpleGrantedAuthority> rtnList = new ArrayList<>();
+
+        for (UserRoles r : this.userroles)
+        {
+            String myRole = "ROLE_" + r.getRole()
+                                       .getName()
+                                       .toUpperCase();
+            rtnList.add(new SimpleGrantedAuthority(myRole));
+        }
+
+        return rtnList;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "User{" +
+                "userid=" + userid +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", userroles=" + userroles +
+                '}';
+    }
+}
+
+11. Create a models/Role file
+This is the Role entity and creates the role Object
+@Entity
+@Table(name = "roles")
+public class Role extends Auditable
+{
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long roleid;
+
+    @Column(nullable = false,
+            unique = true)
+    private String name;
+
+    @OneToMany(mappedBy = "role",
+               cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("role")
+    private List<UserRoles> userroles = new ArrayList<>();
+
+    public Role()
+    {
+    }
+
+    public Role(String name)
+    {
+        this.name = name;
+    }
+
+    public long getRoleid()
+    {
+        return roleid;
+    }
+
+    public void setRoleid(long roleid)
+    {
+        this.roleid = roleid;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public List<UserRoles> getUserroles()
+    {
+        return userroles;
+    }
+
+    public void setUserroles(List<UserRoles> userroles)
+    {
+        this.userroles = userroles;
+    }
+
+}
+
+Create a models/UserRoles file
+This is the UserRole entity and creates the UserRole Object It joins the users to user roles
+
+@Entity
+@Table(name = "userroles")
+public class UserRoles extends Auditable implements Serializable
+{
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "userid")
+    @JsonIgnoreProperties("userroles")
+    private User user;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "roleid")
+    @JsonIgnoreProperties("userroles")
+    private Role role;
+
+    public UserRoles()
+    {
+    }
+
+    public UserRoles(User user,
+                     Role role)
+    {
+        this.user = user;
+        this.role = role;
+    }
+
+    public User getUser()
+    {
+        return user;
+    }
+
+    public void setUser(User user)
+    {
+        this.user = user;
+    }
+
+    public Role getRole()
+    {
+        return role;
+    }
+
+    public void setRole(Role role)
+    {
+        this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+        if (!(o instanceof UserRoles))
+        {
+            return false;
+        }
+        UserRoles userRoles = (UserRoles) o;
+        return getUser().equals(userRoles.getUser()) && getRole().equals(userRoles.getRole());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(getUser(),
+                            getRole());
+    }
+
+    @Override
+    public String toString()
+    {
+        return "UserRoles{" + "user=" + user.getUserid() + ", role=" + role.getRoleid() + '}';
+    }
+}
+
+Create a view/JustTheCount file
+This file is used for the RoleRepository
+public interface JustTheCount
+{
+    int getCount();
+}
+
+Create a repositories/UserRepository file
+public interface UserRepository extends PagingAndSortingRepository<User, Long>
+{
+    User findByUsername(String username);
+}
+
+
+
+Create a repositories/RoleRepository file
+public interface RoleRepository extends CrudRepository<Role, Long>
+{
+    //Checks that User/Role combo does not exist
+    @Query(value = "SELECT COUNT(*) as count FROM userroles WHERE uuid = :uuid AND roleid = :roleid",
+           nativeQuery = true)
+    JustTheCount checkUserRolesCombo(long uuid,
+                                     long roleid);
+
+    //Deletes User Role combo
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM UserRoles WHERE uuid = :uuid AND roleid = :roleid")
+    void deleteUserRoles(long uuid,
+                         long roleid);
+
+    //Adds User role combo
+    @Transactional
+    @Modifying
+    @Query(value = "INSERT INTO UserRoles(uuid, roleid) VALUES (:uuid, :roleid)",
+           nativeQuery = true)
+    void insertUserRoles(long uuid,
+                         long roleid);
+    Role findByNameIgnoreCase(String name);
+
+}
+
+Create a services/UserAuditing file
+@Component
+public class UserAuditing implements AuditorAware<String>
+{
+
+    @Override
+    public Optional<String> getCurrentAuditor()
+    {
+        String uname;
+        Authentication authentication = SecurityContextHolder.getContext()
+                                                             .getAuthentication();
+        if (authentication != null)
+        {
+            uname = authentication.getName();
+        } else
+        {
+            uname = "SYSTEM";
+        }
+        return Optional.of(uname);
+    }
+
+}
+
+Create a services/UserService file
+public interface UserService
+{
+    UserDetails loadUserByUsername(String username);
+
+    List<User> findAll(Pageable pageable);
+
+    User findUserById(long id);
+
+    User findByName(String name);
+
+    void delete(long id);
+
+    User save(User user);
+
+    User update(User user,
+                long id,
+                boolean isAdmin);
+
+    void deleteUserRole(long userid,
+                        long roleid);
+
+    void addUserRole(long userid,
+                     long roleid);
+}
+
+Create a services/UserServiceImpl file
+
+@Service(value = "userService")
+public class UserServiceImpl implements UserDetailsService,
+        UserService
+{
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Transactional
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+    {
+        User user = userRepository.findByUsername(username);
+        if (user == null)
+        {
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
+                                                                      user.getPassword(),
+                                                                      user.getAuthority());
+    }
+
+    public User findUserById(long id) throws EntityNotFoundException
+    {
+        return userRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("User id " + id + " not found!"));
+    }
+
+    @Override
+    public List<User> findAll(Pageable pageable)
+    {
+        List<User> list = new ArrayList<>();
+        userRepository.findAll(pageable)
+                 .iterator()
+                 .forEachRemaining(list::add);
+        return list;
+    }
+
+    @Transactional
+    @Override
+    public void delete(long id)
+    {
+        userRepository.findById(id)
+                 .orElseThrow(() -> new EntityNotFoundException("User id " + id + " not found!"));
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public User findByName(String name)
+    {
+        User uu = userRepository.findByUsername(name);
+        if (uu == null)
+        {
+            throw new EntityNotFoundException("User name " + name + " not found!");
+        }
+        return uu;
+    }
+
+    @Transactional
+    @Override
+    public User save(User user)
+    {
+        if (userRepository.findByUsername(user.getUsername()) != null)
+        {
+            throw new EntityNotFoundException(user.getUsername() + " is already taken!");
+        }
+
+        User newUser = new User();
+        newUser.setUsername(user.getUsername());
+        newUser.setPasswordNoEncrypt(user.getPassword());
+
+        ArrayList<UserRoles> newRoles = new ArrayList<>();
+        for (UserRoles ur : user.getUserroles())
+        {
+            long id = ur.getRole()
+                        .getRoleid();
+            Role role = roleRepository.findById(id)
+                                 .orElseThrow(() -> new EntityNotFoundException("Role id " + id + " not found!"));
+            newRoles.add(new UserRoles(newUser,
+                                       ur.getRole()));
+        }
+        newUser.setUserroles(newRoles);
+
+        return userRepository.save(newUser);
+    }
+
+    @Transactional
+    @Override
+    public User update(User user,
+                       long id,
+                       boolean isAdmin)
+    {
+        Authentication authentication = SecurityContextHolder.getContext()
+                                                             .getAuthentication();
+
+        User authenticatedUser = userRepository.findByUsername(authentication.getName());
+
+        if (id == authenticatedUser.getUserid() || isAdmin)
+        {
+            User currentUser = findUserById(id);
+
+            if (user.getUsername() != null)
+            {
+                currentUser.setUsername(user.getUsername());
+            }
+
+            if (user.getPassword() != null)
+            {
+                currentUser.setPasswordNoEncrypt(user.getPassword());
+            }
+
+            if (user.getUserroles()
+                    .size() > 0)
+            {
+                throw new EntityNotFoundException("User Roles are not updated through User");
+            }
+
+
+
+            return userRepository.save(currentUser);
+        } else
+        {
+            throw new EntityNotFoundException(id + " Not current user");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteUserRole(long userid,
+                               long roleid)
+    {
+        userRepository.findById(userid)
+                 .orElseThrow(() -> new EntityNotFoundException("User id " + userid + " not found!"));
+        roleRepository.findById(roleid)
+                 .orElseThrow(() -> new EntityNotFoundException("Role id " + roleid + " not found!"));
+
+        if (roleRepository.checkUserRolesCombo(userid,
+                                          roleid)
+                     .getCount() > 0)
+        {
+            roleRepository.deleteUserRoles(userid,
+                                      roleid);
+        } else
+        {
+            throw new EntityNotFoundException("Role and User Combination Does Not Exists");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void addUserRole(long userid,
+                            long roleid)
+    {
+        userRepository.findById(userid)
+                 .orElseThrow(() -> new EntityNotFoundException("User id " + userid + " not found!"));
+        roleRepository.findById(roleid)
+                 .orElseThrow(() -> new EntityNotFoundException("Role id " + roleid + " not found!"));
+
+        if (roleRepository.checkUserRolesCombo(userid,
+                                          roleid)
+                     .getCount() <= 0)
+        {
+            roleRepository.insertUserRoles(userid,
+                                      roleid);
+        } else
+        {
+            throw new EntityNotFoundException("Role and User Combination Already Exists");
+        }
+    }
+}
+
+Create a services/RoleService file
+public interface RoleService
+{
+    List<Role> findAll();
+
+    Role findRoleById(long id);
+
+    void delete(long id);
+
+    Role save(Role role);
+
+    Role findByName(String name);
+}
+Create a services/RoleServiceImpl file
+@Service(value = "roleService")
+public class RoleServiceImpl implements RoleService
+{
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Override
+    public List<Role> findAll()
+    {
+        List<Role> list = new ArrayList<>();
+        roleRepository.findAll()
+                 .iterator()
+                 .forEachRemaining(list::add);
+        return list;
+    }
+
+
+    @Override
+    public Role findRoleById(long id)
+    {
+        return roleRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Role id " + id + " not found!"));
+    }
+
+    @Override
+    public Role findByName(String name)
+    {
+        Role rr = roleRepository.findByNameIgnoreCase(name);
+
+        if (rr != null)
+        {
+            return rr;
+        } else
+        {
+            throw new EntityNotFoundException(name);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void delete(long id)
+    {
+        roleRepository.findById(id)
+                 .orElseThrow(() -> new EntityNotFoundException("Role id " + id + " not found!"));
+        roleRepository.deleteById(id);
+    }
+
+
+    @Transactional
+    @Override
+    public Role save(Role role)
+    {
+        Role newRole = new Role();
+        newRole.setName(role.getName());
+
+        ArrayList<UserRoles> newUsers = new ArrayList<>();
+        for (UserRoles ur : role.getUserroles())
+        {
+            long id = ur.getUser()
+                        .getUserid();
+            User user = userRepository.findById(id)
+                                 .orElseThrow(() -> new EntityNotFoundException("User id " + id + " not found!"));
+            newUsers.add(new UserRoles(ur.getUser(),
+                                       newRole));
+        }
+        newRole.setUserroles(newUsers);
+
+        return roleRepository.save(role);
+    }
+}
+
+
+Create a controllers/UserController file
+@RestController
+@RequestMapping("/users")
+public class UserController
+{
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    @Autowired
+    private UserService userService;
+
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping(value = "/users",
+                produces = {"application/json"})
+    public ResponseEntity<?> listAllUsers(HttpServletRequest request,
+                                          @PageableDefault(page = 0,
+                                                           size = 5)
+                                                  Pageable pageable)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        List<User> myUsers = userService.findAll(pageable);
+        return new ResponseEntity<>(myUsers,
+                                    HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping(value = "/user/{userId}",
+                produces = {"application/json"})
+    public ResponseEntity<?> getUserById(HttpServletRequest request,
+                                         @PathVariable
+                                                 Long userId)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        User u = userService.findUserById(userId);
+        return new ResponseEntity<>(u,
+                                    HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping(value = "/user/name/{userName}",
+                produces = {"application/json"})
+    public ResponseEntity<?> getUserByName(HttpServletRequest request,
+                                           @PathVariable
+                                                   String userName)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        User u = userService.findByName(userName);
+        return new ResponseEntity<>(u,
+                                    HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/getusername",
+                produces = {"application/json"})
+    @ResponseBody
+    public ResponseEntity<?> getCurrentUserName(HttpServletRequest request,
+                                                Authentication authentication)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        return new ResponseEntity<>(authentication.getPrincipal(),
+                                    HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping(value = "/user",
+                 consumes = {"application/json"},
+                 produces = {"application/json"})
+    public ResponseEntity<?> addNewUser(HttpServletRequest request,
+                                        @Valid
+                                        @RequestBody
+                                                User newuser) throws URISyntaxException
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        newuser = userService.save(newuser);
+
+        // set the location header for the newly created resource
+        HttpHeaders responseHeaders = new HttpHeaders();
+        URI newUserURI = ServletUriComponentsBuilder.fromCurrentRequest()
+                                                    .path("/{userid}")
+                                                    .buildAndExpand(newuser.getUserid())
+                                                    .toUri();
+        responseHeaders.setLocation(newUserURI);
+
+        return new ResponseEntity<>(null,
+                                    responseHeaders,
+                                    HttpStatus.CREATED);
+    }
+
+
+    @PutMapping(value = "/user/{id}")
+    public ResponseEntity<?> updateUser(HttpServletRequest request,
+                                        @RequestBody
+                                                User updateUser,
+                                        @PathVariable
+                                                long id)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        userService.update(updateUser,
+                           id,
+                           request.isUserInRole("ADMIN"));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<?> deleteUserById(HttpServletRequest request,
+                                            @PathVariable
+                                                    long id)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        userService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/user/{userid}/role/{roleid}")
+    public ResponseEntity<?> deleteUserRoleByIds(HttpServletRequest request,
+                                                 @PathVariable
+                                                         long userid,
+                                                 @PathVariable
+                                                         long roleid)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        userService.deleteUserRole(userid,
+                                   roleid);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/user/{userid}/role/{roleid}")
+    public ResponseEntity<?> postUserRoleByIds(HttpServletRequest request,
+                                               @PathVariable
+                                                       long userid,
+                                               @PathVariable
+                                                       long roleid)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        userService.addUserRole(userid,
+                                roleid);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+}
+Create a controllors/RolesController file
+@RestController
+@RequestMapping("/roles")
+public class RolesController
+{
+    private static final Logger logger = LoggerFactory.getLogger(RolesController.class);
+    @Autowired
+    RoleService roleService;
+
+    @GetMapping(value = "/roles",
+                produces = {"application/json"})
+    public ResponseEntity<?> listRoles(HttpServletRequest request)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        List<Role> allRoles = roleService.findAll();
+        return new ResponseEntity<>(allRoles,
+                                    HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/role/{roleId}",
+                produces = {"application/json"})
+    public ResponseEntity<?> getRoleById(HttpServletRequest request,
+                                         @PathVariable
+                                                 Long roleId)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        Role r = roleService.findRoleById(roleId);
+        return new ResponseEntity<>(r,
+                                    HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/role/name/{roleName}",
+                produces = {"application/json"})
+    public ResponseEntity<?> getRoleByName(HttpServletRequest request,
+                                           @PathVariable
+                                                   String roleName)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        Role r = roleService.findByName(roleName);
+        return new ResponseEntity<>(r,
+                                    HttpStatus.OK);
+    }
+
+
+    @PostMapping(value = "/role")
+    public ResponseEntity<?> addNewRole(HttpServletRequest request,
+                                        @Valid
+                                        @RequestBody
+                                                Role newRole) throws URISyntaxException
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        newRole = roleService.save(newRole);
+
+        // set the location header for the newly created resource
+        HttpHeaders responseHeaders = new HttpHeaders();
+        URI newRoleURI = ServletUriComponentsBuilder.fromCurrentRequest()
+                                                    .path("/{roleid}")
+                                                    .buildAndExpand(newRole.getRoleid())
+                                                    .toUri();
+        responseHeaders.setLocation(newRoleURI);
+
+        return new ResponseEntity<>(null,
+                                    responseHeaders,
+                                    HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/role/{id}")
+    public ResponseEntity<?> deleteRoleById(HttpServletRequest request,
+                                            @PathVariable
+                                                    long id)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        roleService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+}
+
+Enable JPA Auditing in main class
+@EnableJpaAuditing
+@SpringBootApplication
+public class BlogappApplication
+{
+
+    public static void main(String[] args)
+    {
+        SpringApplication.run(BlogappApplication.class, args);
+    }
+
+}
