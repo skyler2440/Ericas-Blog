@@ -11,73 +11,59 @@ const Navbar = props => {
   if (props.signedin == false) {
     return (
       <>
-        <Menu stackable borderless>
-          <Menu.Item>
-            <h1 className="header">Erica's Vanity</h1>
-          </Menu.Item>
-          <Menu.Item>
+      <div className="navbar">
+        <div className="navLeft">
+          <h1 className="header" onClick={e=>{var hidden=document.querySelector('.navMid'); hidden.classList.toggle("hidden")}}>Erica's Vanity</h1>
+        </div>
+        <div className="navMid hidden">
             <NavLink className="navlink" exact to="/">
               Home
             </NavLink>
-          </Menu.Item>
-          <Menu.Item>
             <NavLink className="navlink" to="/post">
               Add Post
             </NavLink>
-          </Menu.Item>
-          <Menu.Item>
             <NavLink className="navlink" to="/blog">
               Blog
             </NavLink>
-          </Menu.Item>
-          <Menu.Item>
             <NavLink className="navlink" to="/contact">
               Contact
             </NavLink>
-          </Menu.Item>
-          <Menu.Item position="right">
+        </div>
+        <div className="navRight">
             <NavLink className="navlink" to="/login">
               Login
             </NavLink>
-          </Menu.Item>
-
-        </Menu>
+        </div>
+      </div>
       </>
     );
   } else {
     return (
       <>
-        <Menu stackable borderless>
-          <Menu.Item>
-            <h1 className="header">Erica's Blog</h1>
-          </Menu.Item>
-          <Menu.Item>
+      <div className="navbar">
+        <div className="navLeft">
+          <h1 className="header" onClick={e=>{var hidden=document.querySelector('.navMid'); hidden.classList.toggle("hidden")}}>Erica's Vanity</h1>
+        </div>
+        <div className="navMid hidden">
             <NavLink className="navlink" exact to="/">
               Home
             </NavLink>
-          </Menu.Item>
-          <Menu.Item>
             <NavLink className="navlink" to="/post">
               Add Post
             </NavLink>
-          </Menu.Item>
-          <Menu.Item>
             <NavLink className="navlink" to="/blog">
               Blog
             </NavLink>
-          </Menu.Item>
-          <Menu.Item>
-            <NavLink className="navlink" to="/profile">
-              Profile
+            <NavLink className="navlink" to="/contact">
+              Contact
             </NavLink>
-          </Menu.Item>
-
-          <Menu.Item position="right">
+        </div>
+        <div className="navRight">
             <NavLink className="navlink" to="/logout">
               Logout
             </NavLink>
-          </Menu.Item>
-        </Menu>
+        </div>
+      </div>
       </>
     );
   }

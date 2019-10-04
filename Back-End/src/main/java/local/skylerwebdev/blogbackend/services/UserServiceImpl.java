@@ -151,15 +151,14 @@ public class UserServiceImpl implements UserDetailsService,
     @Transactional
     @Override
     public User update(User user,
-                       long id,
-                       boolean isAdmin)
+                       long id)
     {
         Authentication authentication = SecurityContextHolder.getContext()
                                                              .getAuthentication();
 
         User authenticatedUser = userrepos.findByUsername(authentication.getName());
 
-        if (id == authenticatedUser.getUuid() || isAdmin)
+        if (id == authenticatedUser.getUuid())
         {
             User currentUser = findUserById(id);
 

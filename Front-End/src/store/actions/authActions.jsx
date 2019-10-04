@@ -96,3 +96,30 @@ export const doCreateAccount = newUserDetails => dispatch =>{
   )
 
 };
+
+export const doUpdateUser = userDetails => dispatch => {
+  const uuid = localStorage.getItem("uuid")
+  dispatch({type: types.UPDATE_USER_START})
+  return axiosWithAuth()
+  .put(`/users/user/${uuid}`, userDetails)
+  .then(res => {
+    console.log(userDetails)
+    console.log("update user res", res)
+    dispatch({type: types.UPDATE_USER_SUCCESS, payload:{message: "User updated Successfully"}})
+    dispatch({ type: types.GET_PROFILE_START });
+    return axiosWithAuth()
+  .get(`/users/user/${uuid}`)
+  
+  .then(res => {
+        dispatch({ type: types.GET_PROFILE_SUCCESS, payload: res.data });
+  
+        })
+      .catch(err => {
+        dispatch({ type: types.GET_PROFILE_FAIL, payload: err });
+  
+      });
+  })
+  .catch(err => {
+    dispatch({type: types.UPDATE_USER_FAIL, payload: err})
+  })
+}

@@ -24,7 +24,7 @@ const AppRouter = props => {
         {/* <Route path="/comment" component={AddComment} props={props} /> */}
         <PrivateRoute path="/blog" component={Blog} props={props} />
         <Route path="/createaccount" component={NewUser} />
-        <Route path='/profile' component={UserProfile}/>
+        <PrivateRoute path='/profile' component={UserProfile}/>
       </Switch>
     </>
   );

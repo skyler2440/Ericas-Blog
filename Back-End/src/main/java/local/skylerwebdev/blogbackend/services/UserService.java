@@ -23,8 +23,7 @@ public interface UserService
     User save(User user);
 
     User update(User user,
-                long id,
-                boolean isAdmin);
+                long id);
 
     void deleteUserRole(long uuid,
                         long roleid);

@@ -22,7 +22,7 @@ public class BlogPost
     private String postauthor;
 
     private String posttitle;
-
+    @Column(length=5000)
     private String postbody;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

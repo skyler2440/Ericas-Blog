@@ -1,3 +1,10 @@
+.navbar{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+}
 .header {
     font-family: 'Satisfy', cursive !important;
     color: #EC494A;
@@ -20,3 +27,149 @@
     border: none !important;
     -webkit-box-shadow: none !important;  
   }
+  .navRight{
+    // margin:0 auto;
+    font-size: 1.5rem;
+    border: 2px solid black;
+
+}
+.navMid{
+    // margin:0 auto;
+    // text-align: center;
+    a{
+      margin-right: 4rem;
+    }
+    border: 2px solid green;
+    // flex-basis: 40em;
+
+
+}
+.navLeft{
+    // margin:0 auto;
+    text-align: left;
+    border: 2px solid red;
+    flex-basis: 15em;
+
+}
+@media only screen and (max-width: 1000px) {
+  .navbar{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex-direction: column;
+  }
+  .header {
+    font-family: 'Satisfy', cursive !important;
+    color: #EC494A;
+}
+.navlink{
+    font-family: 'Beth Ellen', cursive;
+    font-size: 1.2rem;
+    color: #EC494A;
+}
+.navlink.active{
+    color: #A0AE6F;
+    font-size: 1.4;
+  font-weight: 1000;}
+  .navlink:hover{
+    color: #F6C3A2;
+  }
+  .menu{
+    background-color: #D2B2A4 !important;
+    box-shadow: none !important;
+    border: none !important;
+    -webkit-box-shadow: none !important;  
+  }
+  .navRight{
+    // margin:0 auto;
+    font-size: 1.5rem;
+    border: 2px solid black;
+
+}
+.navMid{
+    // margin:0 auto;
+    // text-align: center;
+    a{
+      margin-right: 2rem;
+      // margin: .5rem auto;
+    }
+    border: 2px solid green;
+    // flex-basis: 40em;
+    // display: flex;
+    // flex-direction: column;
+    // margin: 0 auto;
+
+
+}
+.navLeft{
+    // margin:0 auto;
+    text-align: left;
+    border: 2px solid red;
+    flex-basis: 0;
+
+}
+  }
+  @media only screen and (max-width: 480px) {
+    .navbar{
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      flex-direction: column;
+    }
+    .header {
+      font-family: 'Satisfy', cursive !important;
+      color: #EC494A;
+      cursor: pointer;
+  }
+  .navlink{
+      font-family: 'Beth Ellen', cursive;
+      font-size: 1.2rem;
+      color: #EC494A;
+  }
+  .navlink.active{
+      color: #A0AE6F;
+      font-size: 1.4;
+    font-weight: 1000;}
+    .navlink:hover{
+      color: #F6C3A2;
+    }
+    .menu{
+      background-color: #D2B2A4 !important;
+      box-shadow: none !important;
+      border: none !important;
+      -webkit-box-shadow: none !important;  
+    }
+    .navRight{
+      // margin:0 auto;
+      font-size: 1.5rem;
+      border: 2px solid black;
+  
+  }
+  .navMid{
+      // margin:0 auto;
+      // text-align: center;
+      a{
+        // margin-right: 2rem;
+        margin: .5rem auto;
+      }
+      border: 2px solid green;
+      // flex-basis: 40em;
+      display: flex;
+      flex-direction: column;
+      // margin: 0 auto;
+  
+  
+  }
+  .navLeft{
+      // margin:0 auto;
+      text-align: left;
+      border: 2px solid red;
+      flex-basis: 0;
+  
+  }
+  .hidden{
+    display:none;
+  }
+    }

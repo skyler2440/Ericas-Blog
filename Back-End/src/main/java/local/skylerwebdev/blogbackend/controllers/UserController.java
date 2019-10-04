@@ -152,8 +152,8 @@ public class UserController
                             .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
         userService.update(updateUser,
-                           id,
-                           request.isUserInRole("ADMIN"));
+                           id
+                          );
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
