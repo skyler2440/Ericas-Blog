@@ -1,3 +1,28 @@
+// As hex codes */
+
+$rgba-primary-0: rgba(236, 73, 73,1);	// Main Primary color */
+$rgba-primary-1: rgba(255,155,155,.25);
+$rgba-primary-2: rgba(255,113,113,1);
+$rgba-primary-3: rgba(220, 30, 30,1);
+$rgba-primary-4: rgba(169, 14, 14,1);
+
+$rgba-secondary-1-0: rgba(236,147, 73,1);	// Main Secondary color (1) */
+$rgba-secondary-1-1: rgba(255,200,155,1);
+$rgba-secondary-1-2: rgba(255,177,113,1);
+$rgba-secondary-1-3: rgba(220,116, 30,1);
+$rgba-secondary-1-4: rgba(169, 84, 14,1);
+
+$rgba-secondary-2-0: rgba( 44,142,142,1);	// Main Secondary color (2) */
+$rgba-secondary-2-1: rgba(121,199,199,1);
+$rgba-secondary-2-2: rgba( 72,163,163,1);
+$rgba-secondary-2-3: rgba( 18,132,132,1);
+$rgba-secondary-2-4: rgba(  9,101,101,1);
+
+$rgba-complement-0: rgba( 58,189, 58,1);	// Main Complement color */
+$rgba-complement-1: rgba(138,227,138,1);
+$rgba-complement-2: rgba( 92,209, 92,1);
+$rgba-complement-3: rgba( 24,176, 24,1);
+$rgba-complement-4: rgba( 11,135, 11,1);
 .card{
     background: transparent !important;
 }
@@ -67,14 +92,44 @@
       width: 100%;
       overflow: on;
       white-space:normal;
-      border: 1px solid grey;
+        margin: 1rem auto;      
       border-radius: 1%;
       padding: 1rem;
-      margin-top: 1rem;
-      
+      background-color: $rgba-primary-1;
+      box-shadow: 3px 5px 5px 3px rgba(0, 0, 255, .2);
+      h1{
+          color:$rgba-primary-4;
+      }
   }
+  .blogPostDescriptionBox{
+      display: flex;
+    justify-content:space-between;
+    width: 100%;
+    overflow: on;
+    white-space:normal;
+    // border: 1px solid grey;
+    box-shadow: 1px 2px 2px 1px rgba(0, 0, 255, .2);
+    border-radius: 5px;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: $rgba-primary-1;
+    h1{
+        color:$rgba-primary-4 !important;
+    }
+    a{
+        color:$rgba-primary-4 !important;
+        text-decoration: none;
+    }
+
+    
+    
+}
+.deletePost{
+    text-align: right;
+}
   .postContent{
-     border: 3px solid grey;
+    //  border: 3px solid grey;
+    min-height: 25rem;
      padding: 1rem;
      border-radius: 1%;
   }
@@ -88,4 +143,6 @@
     font-weight: bolder;
     cursor: pointer;
   }
-  
+//   .hidden{
+//       display: none;
+//   }

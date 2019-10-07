@@ -2,7 +2,7 @@ import React from "react";
 
 import { Button, Modal } from "semantic-ui-react";
 
-import AddCommentForm from "./AddCommentForm";
+import AddCommentForm from "../../form/AddCommentForm";
 //This Modal Component
 
 const AddComment = props => {

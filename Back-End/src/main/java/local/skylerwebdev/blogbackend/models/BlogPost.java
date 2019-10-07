@@ -2,6 +2,7 @@ package local.skylerwebdev.blogbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.javafaker.Cat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,17 +35,22 @@ public class BlogPost
     @JsonIgnoreProperties("blogPost")
     private List<BlogPostComments> blogPostComments;
 
+    @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("blogPost")
+    private List<BlogPostCategory> blogPostCategory;
+
 
     //todo Add Comment List
 
 
-    public BlogPost(String date, long uuid, String postauthor, String posttitle, String postbody)
+    public BlogPost(String date, long uuid, String postauthor, String posttitle, String postbody, Category category)
     {
         this.date = date;
         this.uuid = uuid;
         this.postauthor = postauthor;
         this.posttitle = posttitle;
         this.postbody = postbody;
+
 
     }
 
@@ -135,6 +141,16 @@ public class BlogPost
         this.blogPostComments = blogPostComments;
     }
 
+    public List<BlogPostCategory> getBlogPostCategory()
+    {
+        return blogPostCategory;
+    }
+
+    public void setBlogPostCategory(List<BlogPostCategory> blogPostCategory)
+    {
+        this.blogPostCategory = blogPostCategory;
+    }
+
     @Override
     public String toString()
     {
@@ -147,6 +163,7 @@ public class BlogPost
                 ", postbody='" + postbody + '\'' +
                 ", userposts=" + userposts +
                 ", blogPostComments=" + blogPostComments +
+                ", blogPostCategory=" + blogPostCategory +
                 '}';
     }
 }

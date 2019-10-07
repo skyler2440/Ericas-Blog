@@ -72,7 +72,7 @@ public class SeedData implements CommandLineRunner
 //        posts.add(new UserBlogPosts(new User(), p1));
 //        posts.add(new UserBlogPosts(new User(), p2));
 //        comments.add(new UserComments(new User(), comment1));
-        User u1 = new User("admin", "password", "First", "Last", "email@test.com",
+        User u1 = new User("admin", "password", "First", "Last", "email@test.com","na",
                            admins, comments, posts);
 
 
@@ -89,7 +89,7 @@ public class SeedData implements CommandLineRunner
                                 r2));
 //        comments.add(new UserComments(new User(), comment2));
         User u2 = new User("cinnamon",
-                           "1234567", "First", "Last", "email@test.com",
+                           "1234567", "First", "Last", "email@test.com","na",
                            datas, comments, posts);
 
         userService.save(u2);
@@ -104,7 +104,7 @@ public class SeedData implements CommandLineRunner
 //        comments.add(new UserComments(new User(), comment3));
 //        posts.add(new UserBlogPosts(new User(), p3));
         User u3 = new User("barnbarn",
-                           "password", "First", "Last", "email@test.com",
+                           "password", "First", "Last", "email@test.com","na",
                            users,comments,posts);
 
         userService.save(u3);
@@ -115,7 +115,7 @@ public class SeedData implements CommandLineRunner
         users.add(new UserRoles(new User(),
                                 r2));
         User u4 = new User("puttat",
-                           "password", "First", "Last", "email@test.com",
+                           "password", "First", "Last", "email@test.com","na",
                            users,comments, posts);
         userService.save(u4);
         posts = new ArrayList<>();
@@ -124,7 +124,7 @@ public class SeedData implements CommandLineRunner
         users.add(new UserRoles(new User(),
                                 r2));
         User u5 = new User("misskitty",
-                           "password", "First", "Last", "email@test.com",
+                           "password", "First", "Last", "email@test.com","na",
                            users, comments,posts);
         userService.save(u5);
 //        List<UserBlogPosts> blogPostsList = new ArrayList<>();
@@ -148,7 +148,7 @@ public class SeedData implements CommandLineRunner
             users.add(new UserRoles(new User(),
                                     r2));
             fakeUser = new User(nameFaker.name().username(),
-                                "password", nameFaker.name().firstName(), nameFaker.name().lastName(), fakeValuesService.bothify("????##@gmail.com"),
+                                "password", nameFaker.name().firstName(), nameFaker.name().lastName(),  fakeValuesService.bothify("????##@gmail.com"),"na",
                                 users,comments,posts);
 //            fakeUser.getUseremails()
 //                    .add(new Useremail(fakeUser,

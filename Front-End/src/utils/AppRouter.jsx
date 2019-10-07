@@ -3,13 +3,15 @@ import { Switch, Route } from "react-router-dom";
 import Home from "../components/pages/Home";
 import About from "../components/pages/About";
 import Contact from "../components/pages/Contact";
-import Login from "../components/pages/Login";
-import AddPost from "../components/pages/AddPost";
-import Blog from "../components/pages/Blog";
+import Login from "../components/form/Login";
+import AddPost from "../components/pages/blog/AddPost";
+import Blog from "../components/pages/blog/Blog";
 import PrivateRoute from "./PrivateRoute";
 import Logout from "../components/pages/Logout";
-import NewUser from "../components/pages/NewUser";
-import UserProfile from "../components/pages/UserProfile";
+import NewUser from "../components/form/NewUser";
+import UserProfile from "../components/form/UserProfile";
+import Blog1 from "../components/pages/blog/Blog1";
+import UserProfilePage from "../components/pages/UserProfilePageSetup";
 
 const AppRouter = props => {
   return (
@@ -22,9 +24,10 @@ const AppRouter = props => {
         <Route path="/logout" component={Logout} />
         <PrivateRoute path="/post" component={AddPost} props={props} />
         {/* <Route path="/comment" component={AddComment} props={props} /> */}
+        <PrivateRoute exact path="/blog/:postid" component={Blog1}/>
         <PrivateRoute path="/blog" component={Blog} props={props} />
         <Route path="/createaccount" component={NewUser} />
-        <PrivateRoute path='/profile' component={UserProfile}/>
+        <Route path='/profile' component={UserProfilePage}/>
       </Switch>
     </>
   );

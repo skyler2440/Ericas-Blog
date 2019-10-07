@@ -25,8 +25,9 @@ export const doSignIn = credentials => dispatch => {
       localStorage.setItem("user", credentials.username);
       dispatch({ type: types.LOGIN_SUCCESS, payload: res.data.access_token });
       dispatch({ type: types.GET_USER_START });
+      var username = localStorage.getItem("user")
       return axiosWithAuth()
-        .get(`/users/name/${credentials.username}`)
+        .get(`/users/name/${username}`)
         .then(res => {
           localStorage.removeItem("user");
           localStorage.setItem("uuid", res.data.uuid);
@@ -83,7 +84,7 @@ export const getLoggedInUser = () => dispatch => {
 
 export const doCreateAccount = newUserDetails => dispatch =>{
   dispatch({ type: types.CREATE_USER_START});
-  axios.post('http://localhost:2019/users/user', newUserDetails)
+  axios.post('http://localhost:2019/createnewuser', newUserDetails)
   .then(
     res => {
       dispatch({ type: types.CREATE_USER_SUCCESS, payload: {message: 'User was created successfully!'}});
@@ -97,11 +98,29 @@ export const doCreateAccount = newUserDetails => dispatch =>{
 
 };
 
-export const doUpdateUser = userDetails => dispatch => {
+export const doCreateProfile = profileDetails => dispatch =>{
+  dispatch({ type: types.CREATE_PROFILE_START});
+  const uuid = localStorage.getItem("uuid")
+  return axiosWithAuth()
+  .post(`/profile/create/${uuid}`, profileDetails)
+  .then(
+    res => {
+      dispatch({ type: types.CREATE_PROFILE_SUCCESS, payload: {message: 'Profile was created successfully!'}});
+    }
+  )
+  .catch(
+    err => {
+      dispatch({type: types.CREATE_PROFILE_FAIL, payload: err})
+    } 
+  )
+
+};
+
+export const doUpdateUser = (id, userDetails) => dispatch => {
   const uuid = localStorage.getItem("uuid")
   dispatch({type: types.UPDATE_USER_START})
   return axiosWithAuth()
-  .put(`/users/user/${uuid}`, userDetails)
+  .put(`/profile/${uuid}/${id}`, userDetails)
   .then(res => {
     console.log(userDetails)
     console.log("update user res", res)
@@ -123,3 +142,38 @@ export const doUpdateUser = userDetails => dispatch => {
     dispatch({type: types.UPDATE_USER_FAIL, payload: err})
   })
 }
+
+export const doUploadPhoto = (photo) => dispatch => {
+  dispatch({ type: types.UPLOAD_START });
+  
+  return axios.post('http://localhost:8000/api/upload', photo,{
+  headers: {
+    "content-type": "multipart/form-data"
+  }})
+  .then(res => {
+    console.log(res)
+    dispatch({ type: types.UPLOAD_SUCCESS, });
+    })
+  .catch(err => {
+    dispatch({ type: types.UPLOAD_FAIL, payload: err });
+
+  });
+}
+
+export const getProfileById = (uuid) => dispatch => {
+
+  dispatch({ type: types.GET_PROFILEBYID_START });
+ 
+  return axiosWithAuth()
+.get(`/profile/${uuid}`)
+
+.then(res => {
+console.log("TCL: res", res)
+      dispatch({ type: types.GET_PROFILEBYID_SUCCESS, payload: res.data });
+
+      })
+    .catch(err => {
+      dispatch({ type: types.GET_PROFILEBYID_FAIL, payload: err });
+
+    });
+};

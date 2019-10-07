@@ -7,7 +7,9 @@ const initialState = {
     isAuth: false,
     isLoading: false,
     isSuccess: false,
-    errors:null
+    errors:null,
+    photo:null,
+    profile: null
 }
 
 export default (state = initialState, action) => {
@@ -58,6 +60,29 @@ export default (state = initialState, action) => {
                 errors: payload,
                 isLoading: false
               };
+              case types.CREATE_PROFILE_START:
+                return {
+                  ...state,
+                  isLoading: true,
+                  isAuth: false,
+                  isSuccess: false,
+                  errors: null
+                };
+              case types.CREATE_PROFILE_SUCCESS:
+                return {
+                  ...state,
+                  isLoading: false,
+                  isAuth: true,
+                  isSuccess: true,
+                  message: payload
+                };
+              case types.CREATE_PROFILE_FAIL:
+                return {
+                  ...state,
+                  errors: payload,
+                  isLoading: false,
+                  token: ""
+                };
             case types.GET_PROFILE_START:
               return {
                 ...state,
@@ -81,6 +106,29 @@ export default (state = initialState, action) => {
                 isLoading: false,
                 token: ""
               };
+              case types.GET_PROFILEBYID_START:
+                return {
+                  ...state,
+                  isLoading: true,
+                  isAuth: false,
+                  isSuccess: false,
+                  errors: null
+                };
+              case types.GET_PROFILEBYID_SUCCESS:
+                return {
+                  ...state,
+                  isLoading: false,
+                  isAuth: true,
+                  isSuccess: true,
+                  profile: payload
+                };
+              case types.GET_PROFILEBYID_FAIL:
+                return {
+                  ...state,
+                  errors: payload,
+                  isLoading: false,
+                 
+                };
               case types.CREATE_USER_START:
                 return {
                   ...state,
@@ -134,6 +182,28 @@ export default (state = initialState, action) => {
               isLoading: false,
               token: ""
             };
+            case types.UPLOAD_START:
+              return {
+                ...state,
+                isLoading: true,
+                isAuth: false,
+                isSuccess: false,
+                errors: null
+              };
+            case types.UPLOAD_SUCCESS:
+              return {
+                ...state,
+                isLoading: false,
+                isAuth: true,
+                isSuccess: true,
+
+              };
+            case types.UPLOAD_FAIL:
+              return {
+                ...state,
+                errors: payload,
+
+              };
         default:
             return state;
     }

@@ -1,66 +1,62 @@
 import React from 'react'
+import { connect } from "react-redux";
+import {doUploadPhoto} from '../../store/actions/authActions'
+import axios from 'axios'
+
 import {withFormik, Form, Field, Formik} from 'formik';
 import Yup from 'yup'
-const Contact = () => (
-    <div>
-      <h1>Contact Erica's Vanity</h1>
-      <Formik
-        initialValues={{ email: '', inquiry: '' }}
-        validate={values => {
-          let errors = {};
-          if (!values.email) {
-            errors.email = 'Required';
-          } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-          ) {
-            errors.email = 'Invalid email address';
-          }
-          return errors;
-        }}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
-        }}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-          /* and other goodies */
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <input
-              type="email"
-              name="email"
-              placeholder='Email'
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.email}
-            />
-            {errors.email && touched.email && errors.email}
-            <textarea
-              name="inquiry"
-              placeholder='Inquiry'
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.inqury}
-            />
-            <button type="submit" disabled={isSubmitting}>
-              Submit
-            </button>
-            <button type='reset' disabled={isSubmitting}>
-                Reset
-            </button>
-          </form>
-        )}
-      </Formik>
-    </div>
-  );
+class Contact extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state ={
+        file: null
+    };
+    this.onFormSubmit = this.onFormSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
+}
+onFormSubmit(e){
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('myImage',this.state.file);
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    };
+    axios.post("http://localhost:8000/api/upload",formData,config)
+        .then((response) => {
+console.log(response)        }).catch((error) => {
+    });
+}
+onChange(e) {
+    this.setState({file:e.target.files[0]});
+}
 
-export default Contact;
+render() {
+    return (
+        <form onSubmit={this.onFormSubmit}>
+            <h1>File Upload</h1>
+            <input type="file" name="myImage" onChange= {this.onChange} />
+            <button type="submit">Upload</button>
+        </form>
+    )
+}
+}
+
+// const Contact = (props) => {
+  // console.log("TCL: Contact -> props", props)
+
+  //   return(
+  //     <>
+  //     <form>
+  //       <input name="file" value={props.photo} type="file"/>
+  //       <button onClick={e=>{ props.doUploadPhoto(props.photo)}}></button>
+  //     </form>
+  //     </>
+    
+  // );
+  //   };
+  //   const mapStateToProps = state => ({
+  //     photo: state.authReducer.photo
+  //   });
+export default connect(null, {doUploadPhoto})(Contact);

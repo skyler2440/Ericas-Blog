@@ -3,6 +3,7 @@ import { Button, Modal } from "semantic-ui-react";
 //This Modal Component
 
 const ConfirmDeleteComment = props => {
+console.log("TCL: props", props)
   return (
     <div className="edit-account">
       <Modal
@@ -20,9 +21,9 @@ const ConfirmDeleteComment = props => {
             //     window.location.reload();
             //   });
               onClick={() => {
-                props.deleteComment.deleteComment(props.commentprops.commentid, props.commentprops.commentuserid)
+                props.deleteComment.deleteComment(props.commentprops.commentid, props.commentprops.commentuuid)
                 .then(() => {
-                  props.deleteComment.getBlogPosts(props.deleteComment.pagenumber);
+                  props.deleteComment.getBlogPostsById(props.deleteComment.post.postid);
                 })
                 .then(() => {
                   //Needs to close on delete.

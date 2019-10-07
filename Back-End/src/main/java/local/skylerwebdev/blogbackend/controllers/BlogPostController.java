@@ -32,7 +32,7 @@ public class BlogPostController
             produces = {"application/json"})
     public ResponseEntity<?> listAllBlogPosts(HttpServletRequest request,
                                               @RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "5") int size)
+                                              @RequestParam(defaultValue = "10") int size)
     {
         logger.trace(request.getMethod()
                 .toUpperCase() + " " + request.getRequestURI() + " accessed");

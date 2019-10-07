@@ -1,4 +1,30 @@
+$rgba-primary-0: rgba(236, 73, 73,1);	// Main Primary color */
+$rgba-primary-1: rgba(255,155,155,1);
+$rgba-primary-2: rgba(255,113,113,1);
+$rgba-primary-3: rgba(220, 30, 30,1);
+$rgba-primary-4: rgba(169, 14, 14,1);
+
+$rgba-secondary-1-0: rgba(236,147, 73,1);	// Main Secondary color (1) */
+$rgba-secondary-1-1: rgba(255,200,155,1);
+$rgba-secondary-1-2: rgba(255,177,113,1);
+$rgba-secondary-1-3: rgba(220,116, 30,1);
+$rgba-secondary-1-4: rgba(169, 84, 14,1);
+
+$rgba-secondary-2-0: rgba( 44,142,142,1);	// Main Secondary color (2) */
+$rgba-secondary-2-1: rgba(121,199,199,1);
+$rgba-secondary-2-2: rgba( 72,163,163,1);
+$rgba-secondary-2-3: rgba( 18,132,132,1);
+$rgba-secondary-2-4: rgba(  9,101,101,1);
+
+$rgba-complement-0: rgba( 58,189, 58,1);	// Main Complement color */
+$rgba-complement-1: rgba(138,227,138,1);
+$rgba-complement-2: rgba( 92,209, 92,1);
+$rgba-complement-3: rgba( 24,176, 24,1);
+$rgba-complement-4: rgba( 11,135, 11,1);
+
 .navbar{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -7,19 +33,19 @@
 }
 .header {
     font-family: 'Satisfy', cursive !important;
-    color: #EC494A;
+    color: $rgba-primary-4;
 }
 .navlink{
     font-family: 'Beth Ellen', cursive;
     font-size: 1.2rem;
-    color: #EC494A;
+    color: $rgba-primary-4;
 }
 .navlink.active{
-    color: #A0AE6F;
+    color: $rgba-complement-4;
     font-size: 1.4;
   font-weight: 1000;}
   .navlink:hover{
-    color: #F6C3A2;
+    color: $rgba-secondary-2-4;
   }
   .menu{
     background-color: #D2B2A4 !important;
@@ -28,26 +54,15 @@
     -webkit-box-shadow: none !important;  
   }
   .navRight{
-    // margin:0 auto;
     font-size: 1.5rem;
-    border: 2px solid black;
-
 }
 .navMid{
-    // margin:0 auto;
-    // text-align: center;
     a{
       margin-right: 4rem;
     }
-    border: 2px solid green;
-    // flex-basis: 40em;
-
-
 }
 .navLeft{
-    // margin:0 auto;
     text-align: left;
-    border: 2px solid red;
     flex-basis: 15em;
 
 }
@@ -59,53 +74,12 @@
     justify-content: space-between;
     flex-direction: column;
   }
-  .header {
-    font-family: 'Satisfy', cursive !important;
-    color: #EC494A;
-}
-.navlink{
-    font-family: 'Beth Ellen', cursive;
-    font-size: 1.2rem;
-    color: #EC494A;
-}
-.navlink.active{
-    color: #A0AE6F;
-    font-size: 1.4;
-  font-weight: 1000;}
-  .navlink:hover{
-    color: #F6C3A2;
-  }
-  .menu{
-    background-color: #D2B2A4 !important;
-    box-shadow: none !important;
-    border: none !important;
-    -webkit-box-shadow: none !important;  
-  }
-  .navRight{
-    // margin:0 auto;
-    font-size: 1.5rem;
-    border: 2px solid black;
-
-}
 .navMid{
-    // margin:0 auto;
-    // text-align: center;
     a{
       margin-right: 2rem;
-      // margin: .5rem auto;
     }
-    border: 2px solid green;
-    // flex-basis: 40em;
-    // display: flex;
-    // flex-direction: column;
-    // margin: 0 auto;
-
-
 }
 .navLeft{
-    // margin:0 auto;
-    text-align: left;
-    border: 2px solid red;
     flex-basis: 0;
 
 }
@@ -118,58 +92,17 @@
       justify-content: space-between;
       flex-direction: column;
     }
-    .header {
-      font-family: 'Satisfy', cursive !important;
-      color: #EC494A;
-      cursor: pointer;
-  }
-  .navlink{
-      font-family: 'Beth Ellen', cursive;
-      font-size: 1.2rem;
-      color: #EC494A;
-  }
-  .navlink.active{
-      color: #A0AE6F;
-      font-size: 1.4;
-    font-weight: 1000;}
-    .navlink:hover{
-      color: #F6C3A2;
-    }
-    .menu{
-      background-color: #D2B2A4 !important;
-      box-shadow: none !important;
-      border: none !important;
-      -webkit-box-shadow: none !important;  
-    }
-    .navRight{
-      // margin:0 auto;
-      font-size: 1.5rem;
-      border: 2px solid black;
-  
-  }
   .navMid{
-      // margin:0 auto;
-      // text-align: center;
       a{
-        // margin-right: 2rem;
         margin: .5rem auto;
       }
-      border: 2px solid green;
-      // flex-basis: 40em;
       display: flex;
       flex-direction: column;
-      // margin: 0 auto;
-  
-  
-  }
-  .navLeft{
-      // margin:0 auto;
-      text-align: left;
-      border: 2px solid red;
-      flex-basis: 0;
-  
   }
   .hidden{
     display:none;
+  }
+  .header{
+    cursor: pointer;
   }
     }

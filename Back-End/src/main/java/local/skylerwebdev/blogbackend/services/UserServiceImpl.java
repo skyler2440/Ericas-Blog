@@ -118,6 +118,7 @@ public class UserServiceImpl implements UserDetailsService,
         newUser.setFname(user.getFname());
         newUser.setLname(user.getLname());
         newUser.setEmail(user.getEmail());
+        newUser.setAvatarurl(user.getAvatarurl());
 
         ArrayList<UserRoles> newRoles = new ArrayList<>();
         newRoles.add(new UserRoles(newUser, rolerepos.findByNameIgnoreCase("user")));
@@ -182,6 +183,10 @@ public class UserServiceImpl implements UserDetailsService,
             if (user.getEmail() != null)
             {
                 currentUser.setEmail(user.getEmail());
+            }
+            if (user.getAvatarurl() != null)
+            {
+                currentUser.setAvatarurl(user.getAvatarurl());
             }
 
             if (user.getUserroles()

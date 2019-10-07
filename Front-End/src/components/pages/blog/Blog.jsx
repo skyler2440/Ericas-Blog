@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
-import { getLoggedInUser } from "../../store/actions/authActions";
-import { getBlogPosts, deleteBlogPost } from "../../store/actions/postActions";
-import { postComment, deleteComment } from "../../store/actions/commentActions";
+import { getLoggedInUser } from "../../../store/actions/authActions";
+import { getBlogPosts, deleteBlogPost } from "../../../store/actions/postActions";
+import { postComment, deleteComment } from "../../../store/actions/commentActions";
 import { connect } from "react-redux";
 import { Card, Comment } from "semantic-ui-react";
 import ConfirmDelete from "./ConfirmDelete";
-import AddCommentForm from "./AddCommentForm";
+import AddCommentForm from "../../form/AddCommentForm";
 import ConfirmDeleteComment from "./ConfirmDeleteComment";
-import "./scss/Blog.scss";
+import{Link} from 'react-router-dom'
+import "../scss/Blog.scss";
 const Blog = props => {
-console.log("TCL: props", props.posts)
+console.log("TCL: propsb1", props.posts)
   useEffect(() => {
     props.getBlogPosts(0);
     props.getLoggedInUser();
@@ -22,7 +23,7 @@ console.log("TCL: props", props.posts)
     pageNumbers.push(i);
   }
   var renderPageNumbers = pageNumbers.map(number => {
-    let classes = props.posts.number === number;
+    let classes = props.posts.number = number;
 
     if (
       number == 1 ||
@@ -43,15 +44,16 @@ console.log("TCL: props", props.posts)
 
   return (
     <>
-      <h1>Blog Works User{" " + username}</h1>
+      <div className="blogHeader"><h1 className="blogHeaderH">Read a post!</h1></div>
       {props.posts &&
         props.posts.content.map(posts => (
           <div>
             <BlogPosts
+            key={posts}
               postid={posts.postid}
-              title={posts.posttitle}
+              title={posts.title}
               date={posts.date}
-              body={posts.postbody}
+              body={posts.body}
               uuid={posts.uuid}
               deleteBlogPost={props.deleteBlogPost}
               deleteComment={props.deleteComment}
@@ -97,67 +99,20 @@ console.log("TCL: props", props.posts)
 };
 
 function BlogPosts(props) {
-  console.log("TCL: props", props)
+  console.log("TCL: props posts", props)
 //   var user = props.posts.user.map(users => {
 //       users = users;
 //   })
   return (
     //   <>
       <>
-      <div className="blogPostBox">
-        <div className='postContent'>
-            <div className="postHeader">
-                <h1>{props.title}</h1>
-                {props.user && props.user.uuid == props.uuid ? (
-              <div className="button-box">
-                <ConfirmDelete deleteBlogPost={props} getBlogPosts={props} />
-              </div>
-            ) : (
-              <></>
-            )}
-            </div>
-            <div className="postMeta">
-                <p className="userName">{props.postAuthor}</p>
-                <p className="postDate">{props.date}</p>
-            </div>
-            <div className="postBody">
-                <p className="postBodyP">{props.body}</p>
-            </div>
-        </div>
-        <h1 className="commentHeader">Comments</h1>
-        {props.comments &&
-              props.comments.map(comments => (
-        <div className="commentContent">
-            <div className="commentBox">
-                
-                <img className="commentAvatar" src="https://react.semantic-ui.com/images/avatar/small/matt.jpg"/>
-                <div className="commentBoxTop">
-                    <p className="commentUserName">{comments.comment.commentusername}</p>
-                    <p className="commentDate">{comments.comment.date}</p>
-                    {props.user &&
-                          props.user.uuid === comments.comment.commentuserid ? (
-                            <p><ConfirmDeleteComment
-                              deleteComment={props}
-                              commentprops={comments.comment}
-                            /></p>
-                          ) : (
-                            <></>
-                          )}
-                </div>
-                {/* <div className="commentBoxBottom">
-                    <p className="commentBody">{comments.comment.comment}</p>
-                </div> */}
-                
-            </div>
-            <div className="commentBoxBottom">
-                    <p className="commentBody">{comments.comment.comment}</p>
-                </div>
-        </div>))}
-        <div className="addComment">
-                {/* <button className="ui button comment showComment"
-                onClick={()=>{let hideboxes = document.querySelector(".hideboxes"); hideboxes.classList.remove('hidden'); console.log(hideboxes.classList)}}>Comment</button> */}
-                <AddCommentForm props={props} />
-                </div>
+      <div className="blogPostDescriptionBox">
+      
+          <Link to={`/blog/${props.postid}`}><h1>{props.title}</h1></Link>
+          {props.user && props.user.uuid === props.uuid ? (
+          <ConfirmDelete deleteBlogPost={props} getBlogPosts={props} />
+          ):(<></>)}
+      
       </div>
           </>
 //     /* <>

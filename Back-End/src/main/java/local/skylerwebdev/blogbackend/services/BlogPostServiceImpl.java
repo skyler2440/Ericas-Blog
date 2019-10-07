@@ -3,8 +3,11 @@ package local.skylerwebdev.blogbackend.services;
 import local.skylerwebdev.blogbackend.exceptions.ResourceFoundException;
 import local.skylerwebdev.blogbackend.exceptions.ResourceNotFoundException;
 import local.skylerwebdev.blogbackend.models.BlogPost;
+import local.skylerwebdev.blogbackend.models.BlogPostCategory;
+import local.skylerwebdev.blogbackend.models.Category;
 import local.skylerwebdev.blogbackend.models.User;
 import local.skylerwebdev.blogbackend.repository.BlogPostRepostitory;
+import local.skylerwebdev.blogbackend.repository.CategoryRepository;
 import local.skylerwebdev.blogbackend.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,8 @@ public class BlogPostServiceImpl implements BlogPostService
     BlogPostRepostitory blogPostRepostitory;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    CategoryRepository categoryRepository;
     @Override
     public List<BlogPost> findAll(Integer pageNo, Integer pageSize, String sortBy)
     {
@@ -98,6 +103,13 @@ return blogPostRepostitory.findAll(new PageRequest(page, size));
                 throw new ResourceFoundException("Post and User Combination Already Exists");
             }
             System.out.println(uuid);
+            ArrayList<BlogPostCategory> blogPostCategories = new ArrayList<>();
+//            for (BlogPostCategory pc : blogPost.getBlogPostCategory())
+//            {
+//                long id = pc.getCategory().getCategoryid();
+//                Category category =  categoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Category id " + id + " not found!"));
+//                blogPostCategories.add(newBlogPost, pc.getCategory())
+//            }
             return blogPostRepostitory.save(newBlogPost);
         }
         else

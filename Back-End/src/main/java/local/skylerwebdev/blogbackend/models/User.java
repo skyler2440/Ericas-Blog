@@ -34,6 +34,8 @@ public class User extends Auditable
 
     private String lname;
 
+    private String avatarurl;
+
     @OneToMany(mappedBy = "user",
                cascade = CascadeType.ALL)
     @JsonIgnoreProperties("user")
@@ -57,6 +59,7 @@ public class User extends Auditable
                 String fname,
                 String lname,
                 String email,
+                String avatarurl,
                 List<UserRoles> userRoles,
                 List<UserComments> usercomments,
                 List<UserBlogPosts> userBlogPosts)
@@ -66,6 +69,7 @@ public class User extends Auditable
         this.fname = fname;
         this.lname = lname;
         this.email = email;
+        this.avatarurl = avatarurl;
         for (UserRoles ur : userRoles)
         {
             ur.setUser(this);
@@ -149,6 +153,16 @@ public class User extends Auditable
         this.lname = lname;
     }
 
+    public String getAvatarurl()
+    {
+        return avatarurl;
+    }
+
+    public void setAvatarurl(String avatarurl)
+    {
+        this.avatarurl = avatarurl;
+    }
+
     public List<UserRoles> getUserroles()
     {
         return userroles;
@@ -206,6 +220,7 @@ public class User extends Auditable
                 ", email='" + email + '\'' +
                 ", fname='" + fname + '\'' +
                 ", lname='" + lname + '\'' +
+                ", avatarurl='" + avatarurl + '\'' +
                 ", userroles=" + userroles +
                 ", usercomments=" + usercomments +
                 ", userBlogPosts=" + userBlogPosts +

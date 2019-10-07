@@ -4,7 +4,7 @@ const initialState = {
   user: null,
   post: null,
   posts: null,
-
+  profile:null,
   isAuth: false,
   isLoading: false,
   isSuccess: false,

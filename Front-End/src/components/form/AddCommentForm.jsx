@@ -13,31 +13,21 @@ function CommentFrm({errors, touched}) {
     var day = d.getDate();
     var year = d.getFullYear();
     var dateset = month + "-" + day + "-" + year
-    let hidebox = document.querySelector('.hiddenbox')
-    let hidebut = document.querySelector('.hiddenbutton')
-    let showcomment = document.querySelector('.showcomment')
 
-    // console.log(hidebut.classList)
-    function addComment(){
-        hidebox.classList.remove('hidden')
-        hidebut.classList.remove('hidden')
-        showcomment.classList.add('hidden')
-    }
 
-    console.log(hidebox)
-    console.log(hidebut)
 
     return(
-        <Form className = "ui form">
+        <Form className = "ui form commentform">
             <div className = "field">
                 {touched.date && errors.date &&(<p className = "error">{errors.date}</p>)}
                 <Field type = "text" className="date" value ={dateset}name = "date" placeholder = "Date" />
             </div>
             <div className = "field">
                 {touched.comment && errors.comment &&(<p className = "error">{errors.comment}</p>)}
-                <Field component="textarea" className="commentbox hideboxes hidden" type = "text" name = "comment" placeholder = "Comment" />
+                <Field component="textarea" className="commentbox  hideboxes" type = "text" name = "comment" placeholder = "Comment" />
             </div>
-            <button className = "ui button hidden hideboxes" type="submit">Submit</button>
+            <button className = "ui button " type="submit">Submit</button>
+            {/* <button className="hidebtn ui button" onClick={e=>{e.preventDefault(); let hiddenbox = document.querySelector('.hideboxes'); let hidebtn = document.querySelector('.hidebtn'); hiddenbox.classList.toggle('hidden');hidebtn.classList.toggle('hidden');  }}>Show Comment</button> */}
         </Form>
     );
 };
@@ -79,12 +69,13 @@ const Comment = withFormik({
     }),
 
     handleSubmit(values, formikBag) {
-        formikBag.props.postComment(values, formikBag.props.props.postid)
-        .then(()=> {formikBag.props.getBlogPosts(formikBag.props.props.pagenumber)}).then(()=>{formikBag.resetForm()})
+        console.log("TCL: handleSubmit -> formikBag", formikBag)
+        formikBag.props.postComment(values, formikBag.props.props.post.postid)
+        .then(()=> {formikBag.props.getBlogPostsById(formikBag.props.props.post.postid)}).then(()=>{formikBag.resetForm()})
     }
     
       })(CommentFrm);
       
 
 
-export default connect(null, { postComment, getBlogPosts })(Comment);
+export default connect(null, { postComment, getBlogPostsById })(Comment);

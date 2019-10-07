@@ -12,3 +12,11 @@ export const axiosWithAuth = () => {
     }
   });
 };
+
+export const axiosWithOutAuth = () => {
+  const token = localStorage.getItem("token");
+  return axios.create({
+    // baseURL: 'https://skylerwebdev-ericasblog.herokuapp.com/',
+    baseURL: "http://localhost:2019/"
+  });
+};
