@@ -3,11 +3,9 @@ import UserProfile from '../form/UserProfile'
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import Bg from '../Bg'
 
 import {getBlogPostsHome} from '../../store/actions/postActions'
-import "./scss/Home.scss"
-const Home = (props) => {
+const Photos = (props) => {
     // const [files, setFiles] = useState({});
     const[uploadedFiles, setUploadedFiles] = useState();
 
@@ -29,6 +27,7 @@ const Home = (props) => {
         }}).then(res => {
         console.log(res)
         setUploadedFiles(res.data.url)
+        props.history.push('/blog')
 
       }).catch(err=>{
         console.log(err)
@@ -48,37 +47,14 @@ const Home = (props) => {
             {uploadedFiles && uploadedFiles.length > 0 ? uploadedFiles.map(url =>(
                 <img src={url} alt={url}/>
             )):(<></>)}
-        <div className="home">
-        <div className="homeHeader">
-            <h1 className="homeHeaderH">Welcome to Erica's Vanity</h1>
-        </div>
-        <Bg>
 
-<h1>Latest Posts</h1>
-{props.posts && props.posts.content.map(posts => (
- 
-<>
-<div className="homeLatest">
-    <div className="homeLatestTitle">
-<h1>{posts.title}</h1>
-<p>{posts.date}</p>
-</div>
-<p>{posts.body.slice(0,100).concat('...')}</p>
-<Link className="homeLink"to={`/blog/${posts.postid}`}>Read Me...</Link>
-</div>
-</>
-))}
-</Bg>
-
-</div>
-
-</>
+        </>
     )
 }
 
 const mapStateToProps = (state) => ({
-    posts: state.postReducer.posts,
+    postid: state.postReducer.postid,
     // console.log(state);
     })
-export default connect(mapStateToProps, {getBlogPostsHome})(Home);
+export default connect(mapStateToProps, {getBlogPostsHome})(Photos);
 

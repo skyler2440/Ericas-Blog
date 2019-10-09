@@ -12,6 +12,8 @@ import NewUser from "../components/form/NewUser";
 import UserProfile from "../components/form/UserProfile";
 import Blog1 from "../components/pages/blog/Blog1";
 import UserProfilePage from "../components/pages/UserProfilePageSetup";
+import Photos from "../components/form/Photos";
+
 
 const AppRouter = props => {
   return (
@@ -28,6 +30,7 @@ const AppRouter = props => {
         <PrivateRoute path="/blog" component={Blog} props={props} />
         <Route path="/createaccount" component={NewUser} />
         <Route path='/profile' component={UserProfilePage}/>
+        <Route path='/photos' component={Photos}/>
       </Switch>
     </>
   );

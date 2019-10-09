@@ -22,12 +22,13 @@ export default (state = initialState, action) => {
         errors: null
       };
     case types.POST_NEW_BLOG_SUCCESS:
-      const newBlogPost = [...state.post, payload];
+      // const newBlogPost = [...state.post, payload];
       return {
         ...state,
         isLoading: false,
         errors: null,
-        post: newBlogPost,
+        // post: newBlogPost,
+        postid:payload,
         isSuccess: true
       };
     case types.POST_NEW_BLOG_FAIL:

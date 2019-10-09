@@ -196,7 +196,7 @@ export default (state = initialState, action) => {
                 isLoading: false,
                 isAuth: true,
                 isSuccess: true,
-
+                photo: payload
               };
             case types.UPLOAD_FAIL:
               return {

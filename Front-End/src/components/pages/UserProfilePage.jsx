@@ -24,7 +24,7 @@ const UserProfilePage = ({userprops, uuid, doUpdateUser}) => {
     const fileUploadHandle = () => {
       const fd = new FormData();
       fd.append('avatar', selFile)
-      axios.post("http://localhost:8000/api/upload", fd,{
+      axios.post("http://localhost:8000/api/avatar", fd,{
         headers:{
             'Content-Type': 'multipart/form-data'
         }}).then(res => {

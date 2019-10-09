@@ -7,8 +7,9 @@ export const postBlogPost = (post) => dispatch =>{
     return axiosWithAuth()
     .post(`/posts/${user}`, post)
     .then(res => {
+    console.log("TCL: res", res)
   
-      dispatch({type: types.POST_NEW_BLOG_SUCCESS, payload: res.data.item})
+      dispatch({type: types.POST_NEW_BLOG_SUCCESS, payload: res.data})
     })
     .catch(err => {
       dispatch({type: types.POST_NEW_BLOG_FAIL, payload: err})

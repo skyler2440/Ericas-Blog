@@ -10,3 +10,7 @@ Back-End/target/
 node_modules/
 
 fileuploadserver/uploads/
+
+fileuploadserver/avatars/
+
+fileuploadserver/blogphoto/
